@@ -1,0 +1,16 @@
+global proc ExpObj(string $objs)
+{
+$objs=`textField -q -text gavename`;
+string $dir=`workspace -q -rd`+"data/";
+string $objfile=$dir+"Exp_"+$objs+".obj";
+file -op "groups=0;ptgroups=0;materials=0;smoothing=0;normals=0" -typ "OBJexport" -pr -es $objfile;
+}
+
+if(`window -ex "ExpObj"`) deleteUI -window "ExpObj";
+window "ExpObj";
+columnLayout -columnAttach "both" 1  -columnWidth 300 ;
+text -l "gaveFileName";
+string $Field=`textField  gavename`;
+$objs=`textField -q -text gavename`;
+button -l "OK" -c "ExpObj($objs)";
+showWindow "ExpObj";

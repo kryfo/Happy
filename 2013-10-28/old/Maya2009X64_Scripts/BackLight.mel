@@ -1,0 +1,43 @@
+
+string $cameras[] = `ls -cameras`;
+string $getcamera[]=`ls "XF*"`;
+for($lightcam in $cameras)
+{
+if(stringArrayCount($lightcam, $getcamera))
+{select -add $lightcam; pickWalk -d up;}
+}
+
+
+string $selcams[]=`ls -sl`;
+int $i =size($selcams);
+if($i==1)
+{ 
+string $sel=$selcams[0];
+ if( !`objExists backlightA` )
+	{
+	string $lighta = `directionalLight -n backlightA`;
+	setAttr "backlightAShape.color" -type double3 0.7 0.8 1 ;
+	setAttr "backlightAShape.useDepthMapShadows" 1;
+	setAttr "backlightAShape.dmapResolution" 1024;
+	setAttr "backlightAShape.dmapFilterSize" 6;
+	}
+ if( !`objExists backlightB` )
+	{
+	string $lighta = `directionalLight -n backlightB`;
+	setAttr "backlightBShape.color" -type double3 0.7 0.8 1 ;
+	setAttr "backlightBShape.useDepthMapShadows" 1;
+	setAttr "backlightBShape.dmapResolution" 1024;
+	setAttr "backlightBShape.dmapFilterSize" 6;
+	}
+
+orientConstraint -offset 205  25  0 -weight 1 $sel backlightA;
+orientConstraint -offset 205 335 0 -weight 1 $sel backlightB;
+
+
+select $sel;
+}
+else
+    {select -cl;
+error "Scenes have no wants camera or have too many cameras!";
+	
+    }

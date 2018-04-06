@@ -1,0 +1,49 @@
+//////////////////////////////////////////…Ë÷√‰÷»æœ‡ª˙
+string $fileshot=`file -q -sn -shn`;
+global string $Gepisode;
+global string $Gparagraph;
+global string $Gscene;
+
+string $pro=`match ("[a-z]+")  $fileshot`;
+////////////////////////////////////////////////////////
+string $episode=  `match ("e[0-9]+"+"[a-z]+") $fileshot`;
+if ($episode==""){string $episode=`match ("e[0-9]+") $fileshot`;$Gepisode=$episode;}
+else{$Gepisode=$episode;}
+////////////////////////////////////////////////////////
+string $paragraph=`match ("p[0-9]+"+"[a-z]+") $fileshot`;
+if ($paragraph==""){string $paragraph=`match ("p[0-9]+") $fileshot`;$Gparagraph=$paragraph;}
+else{$Gparagraph=$paragraph;}
+////////////////////////////////////////////////////////
+string $scene=`match ("s[0-9]+"+"[a-z]+") $fileshot`;
+if ($scene==""){string $scene=`match ("s[0-9]+") $fileshot`;$Gscene=$scene;}
+else{$Gscene=$scene;}
+string $camName=$pro+"_"+$Gepisode+"_"+$Gparagraph+"_"+$Gscene+"_cam";
+string $camStero=$pro+"_"+$Gepisode+"_"+$Gparagraph+"_"+$Gscene;
+////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
+if((!`getAttr -l "perspShape.renderable"`))
+{setAttr "perspShape.renderable" 0;}
+if((!`getAttr -l "topShape.renderable"`))
+{setAttr "topShape.renderable" 0;}
+if((!`getAttr -l "frontShape.renderable"`))
+{setAttr "frontShape.renderable" 0;}
+if((!`getAttr -l "sideShape.renderable"`))
+{setAttr "sideShape.renderable" 0;}
+
+string $perspCameras[] = `listCameras -p`;
+	for($rendercam in $perspCameras)
+	{    
+	    if((!`getAttr -l ($rendercam+".renderable")`)&&(!`gmatch $rendercam "persp"`)&&(!`gmatch $rendercam "*stereoCamera*"`))
+	    {setAttr  ($rendercam+".renderable") 1;rename $rendercam $camName;} 
+       	    else if(`gmatch $rendercam "*stereoCameraLeft"`)
+       	    {setAttr  ($rendercam+".renderable") 1;rename $rendercam ($camStero+"_stereoCameraLeft");}
+       	    else if(`gmatch $rendercam "*stereoCameraRight"`)
+       	    {setAttr  ($rendercam+".renderable") 1;rename $rendercam ($camStero+"_stereoCameraRight");}           
+	}
+//////////////////////
+
+
+
+
+
+

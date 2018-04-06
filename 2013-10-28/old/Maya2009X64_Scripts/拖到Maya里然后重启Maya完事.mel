@@ -1,0 +1,16 @@
+string $Getenv =`getenv "HOME"`;
+
+string $del="/maya/2009-x64/scripts/userSetup.mel";
+
+string $env="/maya/2009-x64/Maya.env";
+
+string $delfile=$Getenv+$del;
+
+string $envfile=$Getenv+$env;
+
+
+string $netfile ="//192.168.0.188/plug-ins/Maya2009X64_Scripts/Maya.env";
+
+sysFile -copy  $envfile  $netfile;
+
+sysFile -delete $delfile;

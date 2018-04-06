@@ -1,0 +1,38 @@
+ string $perspCameras[] = `listCameras -p`;
+for($cama in $perspCameras)
+{
+if((!`getAttr -l ($cama+".renderable")`)&&(!`gmatch $cama "persp"`))
+	{ 
+	 string $perspPanel = `getPanel -withLabel "Persp View"`;
+	 lookThroughModelPanel $cama $perspPanel;
+	}
+}
+string $sShdPanel = `getPanel -withFocus`;
+modelEditor -edit -displayAppearance smoothShaded $sShdPanel;
+		
+string $workdspace=`workspace -q -rd`;
+string $fileN=`file -q -sn -shn`;
+if($fileN=="")
+{$fileN="untitled";}
+string $filenameUP="data/"+basenameEx($fileN);
+string $filenameDN=$workdspace+"data/"+basenameEx($fileN)+".avi";
+
+string $sound[]=`ls -type audio`;
+
+/////////////////////////////////////////显示屏幕内容
+source  "cameraShow.mel";
+/////////////////////////////////////////
+int $version=`about -f`;
+if($version>2009)
+{
+playblast  -format avi  -sound $sound[0] -filename $filenameUP  -forceOverwrite -sequenceTime 0 -clearCache 1 -viewer 1 -showOrnaments 1 -fp 4 -percent 100 -compression "none" -quality 100 -widthHeight `getAttr "defaultResolution.w"` `getAttr "defaultResolution.h"`;
+}
+else
+{
+playblast  -format movie -sound $sound[0]  -filename $filenameDN  -forceOverwrite -clearCache 1 -viewer 1 -showOrnaments 1 -fp 4 -percent 100 -compression "none"  -widthHeight `getAttr "defaultResolution.w"` `getAttr "defaultResolution.h"`;
+
+}
+
+////////////////////////////////////////不显示屏幕内容
+source "cameraHide.mel";
+

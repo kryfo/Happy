@@ -1,0 +1,22 @@
+//////////////////////////////////Normal²ÄÖÊÇò¼°¸³²ÄÖÊ
+if (!`objExists NRMshaderSG`)
+{sets -renderable true -noSurfaceShader true -empty -name NRMshaderSG;}
+
+if (!`objExists NRMshader`)
+{ string $shader = `shadingNode -asShader surfaceShader - n NRMshader`; }
+
+if (!`objExists NRMtexture`)
+{ string $texture = `shadingNode -asTexture  mib_amb_occlusion -n NRMtexture`; }
+
+
+if(`isConnected NRMshader.outColor NRMshaderSG.surfaceShader`==0)
+{
+connectAttr -f NRMshader.outColor NRMshaderSG.surfaceShader;
+connectAttr -f NRMtexture.outValue NRMshader.outColor;
+
+setAttr "NRMtexture.samples" 128;
+setAttr "NRMtexture.output_mode" 3;
+setAttr "NRMtexture.spread" 0.8;
+setAttr "NRMtexture.max_distance" 25;
+select  -cl;
+}

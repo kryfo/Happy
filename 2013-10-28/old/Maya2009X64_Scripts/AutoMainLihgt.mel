@@ -1,0 +1,114 @@
+string $camshapes[]=`listRelatives -shapes`;
+select -cl;
+for($selcam in $camshapes)
+{  
+if(`objectType -isType "camera" $selcam`)
+ {select -add $selcam;pickWalk -d up;}
+}
+string $selcams[]=`ls -sl`;
+int $i=size($selcams);
+
+if($i==1)
+{ 
+string $sel=$selcams[0];
+
+ if( !`objExists backlightA` )
+	{
+	string $lighta = `directionalLight -n backlightA`;
+	setAttr "backlightAShape.color" -type double3 0.8 0.833 1;
+	setAttr "backlightAShape.intensity" 0.6;
+	setAttr "backlightAShape.useDepthMapShadows" 1;
+	setAttr "backlightAShape.dmapResolution" 1024;
+	setAttr "backlightAShape.dmapFilterSize" 6;
+	}
+ if( !`objExists backlightB` )
+	{
+	string $lighta = `directionalLight -n backlightB`;
+	setAttr "backlightBShape.color" -type double3 0.8 0.833 1;
+	setAttr "backlightAShape.intensity" 0.6;
+	setAttr "backlightBShape.useDepthMapShadows" 1;
+	setAttr "backlightBShape.dmapResolution" 1024;
+	setAttr "backlightBShape.dmapFilterSize" 6;
+	}
+ if( !`objExists Char_envlight` )
+	{
+	string $envlight = `ambientLight -n Char_envlight`;
+	setAttr "Char_envlightShape.intensity" 0.3;
+	setAttr "Char_envlightShape.ambientShade" 0.2;
+	}
+
+ if( !`objExists Char_mainLight` )
+	{
+	string $directionalLight = `directionalLight -n Char_mainLight`;
+	setAttr "Char_mainLightShape.intensity" 0.8;
+	setAttr "Char_mainLightShape.color" -type double3 1 0.953 0.9;
+	setAttr "Char_mainLightShape.useDepthMapShadows" 1;
+	setAttr "Char_mainLightShape.dmapResolution" 2048;
+	setAttr "Char_mainLightShape.dmapFilterSize" 3;
+	setAttr "Char_mainLight.scaleX" 3;
+	setAttr "Char_mainLight.scaleY" 3;
+	setAttr "Char_mainLight.scaleZ" 3;
+	}
+
+ if( !`objExists Char_fillLight` )
+	{
+	string $directionalLight = `directionalLight -n Char_fillLight`;
+	setAttr "Char_fillLightShape.color" -type double3 0.8 0.833 1;
+	setAttr "Char_fillLightShape.intensity" 0.15;
+	setAttr "Char_fillLightShape.useDepthMapShadows" 0;
+	setAttr "Char_fillLight.scaleX" 2;
+	setAttr "Char_fillLight.scaleY" 2;
+	setAttr "Char_fillLight.scaleZ" 2;
+	}
+/////////////////////
+string $directConnbackA[] = `listConnections -s 1 -d 0 -type transform backlightA`;
+int $ida =size($directConnbackA);
+if($ida>0)
+{
+delete $directConnbackA[0];
+}
+string $directConnbackB[] = `listConnections -s 1 -d 0 -type transform backlightB`;
+int $idb =size($directConnbackB);
+if($idb>0)
+{
+delete $directConnbackB[0];
+}
+orientConstraint -offset 205  25  0 -weight 1 $sel backlightA;
+orientConstraint -offset 205 335 0 -weight 1 $sel backlightB;
+/////////////////////
+
+string $directConn[] = `listConnections -s 1 -d 0 -type transform Char_mainLight`;
+int $id =size($directConn);
+if($id>0)
+{
+delete $directConn[0];
+}
+orientConstraint -offset 330  330  0 -weight 1 $sel Char_mainLight;
+/////////////////////
+
+string $directfillConn[] = `listConnections -s 1 -d 0 -type transform Char_fillLight`;
+int $if =size($directfillConn);
+if($if>0)
+{
+delete $directfillConn[0];
+}
+orientConstraint -offset 330  30  0 -weight 1 $sel Char_fillLight;
+///////////////////////////
+
+string $envConn[] = `listConnections -s 1 -d 0 -type transform Char_envlight`;
+int $ie =size($envConn);
+if($ie>0)
+{
+delete $envConn[0];
+}
+pointConstraint -offset 0 0 0 -weight 1 $sel Char_envlight;
+////////////////////////
+select $sel;
+}
+else
+    {
+warning "Pleses select one camera!";
+select -cl;	
+    }
+
+

@@ -1,0 +1,19 @@
+//////////////////////////////////OCC²ÄÖÊÇò¼°¸³²ÄÖÊ
+if (!`objExists OCCshaderSG`)
+{sets -renderable true -noSurfaceShader true -empty -name OCCshaderSG;}
+
+if (!`objExists OCCshader`)
+{ string $shader = `shadingNode -asShader surfaceShader - n OCCshader`; }
+
+if (!`objExists OCCtexture`)
+{ string $texture = `shadingNode -asTexture  mib_amb_occlusion -n OCCtexture`; }
+
+if(`isConnected OCCshader.outColor OCCshaderSG.surfaceShader`==0)
+{
+connectAttr -f OCCshader.outColor OCCshaderSG.surfaceShader;
+connectAttr -f OCCtexture.outValue OCCshader.outColor;
+
+setAttr "OCCtexture.samples" 128;
+setAttr "OCCtexture.spread" 0.8;
+setAttr "OCCtexture.max_distance" 25;
+}

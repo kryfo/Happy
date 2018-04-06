@@ -1,0 +1,15 @@
+///////////////////////////////////////////////
+string $selRGBA[]=`ls -sl`;
+if (!`objExists rgbaAshaderSG`)
+	{sets -renderable true -noSurfaceShader true -empty -name rgbaAshaderSG;}
+if (!`objExists rgbaAshader`)
+	{ string $shader = `shadingNode -asShader surfaceShader - n rgbaAshader`; }
+if(`isConnected rgbaAshader.outColor rgbaAshaderSG.surfaceShader`==0)
+	{connectAttr -f rgbaAshader.outColor rgbaAshaderSG.surfaceShader;}
+
+if(size($selRGBA)>0)
+{
+select -r $selRGBA;
+sets -e -forceElement rgbaAshaderSG;
+}
+////////////////////////////////////////////////

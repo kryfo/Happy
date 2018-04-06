@@ -1,0 +1,42 @@
+string $defaultLightSet[] =`listConnections -t lightLinker -p 1  defaultLightSet.message`;
+//size($defaultLightSet);
+for($perLightSet in $defaultLightSet)
+{
+string $a= "lightLinker1.link";
+string $c=`substitute $a $perLightSet ""`;
+int $nm=`match "[0-9]+" $c`;
+if(`isConnected defaultLightSet.message lightLinker1.link[$nm].light`)
+	{
+disconnectAttr defaultLightSet.message lightLinker1.link[$nm].light;
+	}
+if(`isConnected defaultLightSet.message lightLinker1.link[$nm].object`)
+	{
+disconnectAttr defaultLightSet.message lightLinker1.link[$nm].object;
+	}
+if(`isConnected defaultLightSet.message lightLinker1.shadowLink[$nm].shadowLight`)
+	{
+ disconnectAttr defaultLightSet.message lightLinker1.shadowLink[$nm].shadowLight;
+	}
+}
+
+/////////////////////
+string $hyperGraph[]=`listConnections -t lightLinker -p 1 hyperGraphLayout.message`;
+size($hyperGraph);
+for($perObj in $hyperGraph)
+{
+string $a= "lightLinker1.link";
+string $c=`substitute $a $perObj ""`;
+int $nm=`match "[0-9]+" $c`;
+if(`isConnected hyperGraphLayout.message lightLinker1.link[$nm].object`)
+	{
+ disconnectAttr hyperGraphLayout.message lightLinker1.link[$nm].object;
+	}
+}
+/////////////////////////////
+string $shade[]=`ls -type shadingEngine`;
+     for($i=0;$i<`size $shade`;$i++)
+      {		   
+string $command="connectAttr -f defaultLightSet.message lightLinker1.link["+$i+"].light";
+eval ($command);
+      }
+print ("there have " + size($defaultLightSet) +" defaultLightSetLink to be deleted" );

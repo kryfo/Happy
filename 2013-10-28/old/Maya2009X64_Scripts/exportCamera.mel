@@ -1,0 +1,47 @@
+
+string $fileDialog = `fileDialog`;
+
+string $filePath = dirname($fileDialog)+"/";
+
+string $camPath =$filePath+"cameras"+"/";
+
+string $filename[]  =`getFileList -folder ($filePath+"/") -filespec "*.mb"`;
+
+if(size($filename)>0)
+{
+	sysFile -makeDir ($filePath+"cameras");
+
+	string $camfile;
+	for($camfile in $filename)
+	{
+	file -f -o ($filePath+$camfile);
+	string $filetemp = endString($camfile, 20);
+	string $camname = `substitute $filetemp $camfile "_cam"`;
+	string $perspCameras[] = `listCameras -p`;
+	for($cam in $perspCameras)
+		{
+	if((!`getAttr -l ($cam+".renderable")`)&&(!`gmatch $cam "persp"`))
+			{ select $cam;
+	setAttr -lock true ($cam+".tx");
+	setAttr -lock true ($cam+".ty");
+	setAttr -lock true ($cam+".tz");
+	setAttr -lock true ($cam+".sx");
+	setAttr -lock true ($cam+".sy");
+	setAttr -lock true ($cam+".sz");	
+	rename $camname; 
+			}
+		}
+
+	string $perspCameras[] = `listCameras -p`;
+	for($cam in $perspCameras)
+	  	{
+	if((!`getAttr -l ($cam+".renderable")`)&&(!`gmatch $cam "persp"`))
+			{ select -add $cam; }
+ 	 	}
+	string $EXPcamfile=$camPath+$camname+".mb";
+	file -op "v=0" -typ "mayaBinary" -pr -es $EXPcamfile;
+
+	}
+	file -f -new;
+
+}

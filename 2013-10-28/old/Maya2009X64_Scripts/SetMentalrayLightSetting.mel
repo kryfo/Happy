@@ -1,0 +1,130 @@
+
+///////////////////////////////////////////////////////////////
+//设置mayaMentalray渲染器
+
+     if (!`pluginInfo -query -loaded "Mayatomr.mll"`) loadPlugin "Mayatomr.mll";
+
+     miCreateDefaultNodes();
+
+     miCreateOtherOptionsNodesForURG();
+
+setAttr defaultRenderGlobals.currentRenderer -type "string" "mentalRay";
+
+//设置输出图片名前辍
+setAttr -type "string" defaultRenderGlobals.imageFilePrefix "<Scene>";
+
+//图片输出像数
+setAttr "defaultResolution.width" 1024;
+setAttr "defaultResolution.height" 576;
+setAttr "defaultResolution.deviceAspectRatio" 1.7769999504089355;
+setAttr "defaultResolution.pixelAspect" 1;
+
+//关掉默认灯渲染
+setAttr defaultRenderGlobals.enableDefaultLight 0;
+//设置图片输出格式
+setAttr "defaultRenderGlobals.imageFormat" 3;
+//设置图片输出方式
+	setAttr defaultRenderGlobals.animation 1;
+	setAttr defaultRenderGlobals.putFrameBeforeExt 1;
+	setAttr defaultRenderGlobals.periodInExt 1;
+	setAttr defaultRenderGlobals.outFormatControl 0;
+setAttr "defaultRenderGlobals.extensionPadding" 4;
+//设置渲染质量和过滤值
+setAttr "miDefaultOptions.minSamples" 0;
+setAttr "miDefaultOptions.maxSamples" 2;
+
+
+setAttr -l false "miDefaultOptions.filter";
+setAttr miDefaultOptions.filter 1;
+setAttr miDefaultOptions.filterWidth 1.1;
+setAttr miDefaultOptions.filterHeight 1.1;
+
+
+setAttr "miDefaultOptions.rayTracing" 1;
+setAttr "miDefaultOptions.maxReflectionRays" 1;
+setAttr "miDefaultOptions.maxRefractionRays" 1;
+setAttr "miDefaultOptions.maxRayDepth" 1;
+setAttr "miDefaultOptions.maxShadowRayDepth" 1;
+
+setAttr miDefaultOptions.motionBlur 0;
+
+setAttr "miDefaultOptions.globalIllum" 0;
+setAttr "miDefaultOptions.finalGather" 0;
+
+
+
+//设置pal格式（25fps）
+currentUnit -t pal -updateAnimation 1;
+string $cames[] = `ls -type camera`;
+string $onecam;
+for($onecam in $cames)
+{
+	setAttr ($onecam+".farClipPlane")	 100000;
+	setAttr ($onecam+".displaySafeAction")   1;
+	setAttr ($onecam+".displayResolution")   1;
+	setAttr ($onecam+".overscan") 		 1.1;
+}
+
+
+//设置渲染帧长
+string $fileName =`file -q -sn`;
+if(!($fileName==""))
+{
+//起始帧
+string $endStringStratName =endString($fileName,12);
+string $stratFrameName = basename($fileName ,$endStringStratName);
+string $startFrame =endString($stratFrameName, 3);
+setAttr "defaultRenderGlobals.startFrame" $startFrame;
+//结束帧
+string $endStringEndName =endString($fileName,8);
+string $endFrameName = basename($fileName ,$endStringEndName);
+string $endFrame =endString($endFrameName, 3);
+setAttr "defaultRenderGlobals.endFrame" $endFrame;
+
+//设置首尾帧
+playbackOptions -e -min $startFrame -max $endFrame;
+playbackOptions -e -ast $startFrame -aet $endFrame;
+}
+
+
+//设置渲染相机
+///////////////////////////////////////////////
+string $filename =`file -q -sn -shn`;
+string $camname=(`match ".*sc...."  $filename`)+"cam";
+
+string $selcamsize[]=`ls -sl`;
+if(size($selcamsize)==1)
+{
+string $perspCameras[] = `listCameras -p`;
+	for($rendercam in $perspCameras)
+		{
+	if((!`getAttr -l ($rendercam+".renderable")`)&&(!`gmatch $rendercam "persp"`))
+			{ select $rendercam;
+	setAttr  ($rendercam+".renderable") 1;
+	//setAttr -lock true ($rendercam+".tx");
+	//setAttr -lock true ($rendercam+".ty");
+	//setAttr -lock true ($rendercam+".tz");
+	//setAttr -lock true ($rendercam+".rx");
+	//setAttr -lock true ($rendercam+".ry");
+	//setAttr -lock true ($rendercam+".rz");
+	//setAttr -lock true ($rendercam+".sx");
+	//setAttr -lock true ($rendercam+".sy");
+	//setAttr -lock true ($rendercam+".sz");
+			rename $camname;
+			} 
+		}
+
+if((!`getAttr -l "perspShape.renderable"`))
+{setAttr "perspShape.renderable" 0;}
+if((!`getAttr -l "topShape.renderable"`))
+{setAttr "topShape.renderable" 0;}
+if((!`getAttr -l "frontShape.renderable"`))
+{setAttr "frontShape.renderable" 0;}
+if((!`getAttr -l "sideShape.renderable"`))
+{setAttr "sideShape.renderable" 0;}
+
+select $camname;
+
+}
+	
+////////////////////////////////////////////////////////////////////////////

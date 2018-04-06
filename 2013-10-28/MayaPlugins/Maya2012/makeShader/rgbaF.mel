@@ -1,0 +1,32 @@
+///////////////////////////////////////////////
+string $selRGBA[]=`ls -sl`;
+if (!`objExists rgbaFshaderSG`)
+	{sets -renderable true -noSurfaceShader true -empty -name rgbaFshaderSG;}
+if (!`objExists rgbaFshader`)
+	{ string $shader = `shadingNode -asShader surfaceShader - n rgbaFshader`; }
+if (!`objExists rgbaFtexture`)
+{string $texture = `shadingNode -asTexture ramp -n rgbaFtexture`;}
+if (!`objExists rgbaFutility`)
+{string $utility = `shadingNode -asUtility samplerInfo -n rgbaFutility`;}
+if(`isConnected rgbaFshader.outColor rgbaFshaderSG.surfaceShader`==0)
+{
+connectAttr -f rgbaFshader.outColor rgbaFshaderSG.surfaceShader;
+connectAttr -f rgbaFtexture.outColor rgbaFshader.outColor;
+connectAttr -f rgbaFutility.facingRatio rgbaFtexture.vCoord;
+setAttr "rgbaFtexture.colorEntryList[2].color" -type double3 0 0 0 ;
+setAttr "rgbaFtexture.colorEntryList[2].position" 1;
+setAttr "rgbaFtexture.colorEntryList[1].color" -type double3 0 0 0 ;
+setAttr "rgbaFtexture.colorEntryList[1].position" 0.5;
+setAttr "rgbaFtexture.colorEntryList[0].color" -type double3 1 1 1 ;
+setAttr "rgbaFtexture.colorEntryList[0].position" 0;
+}
+if(size($selRGBA)>0)
+{
+select -r $selRGBA;
+sets -e -forceElement rgbaFshaderSG;
+}
+////////////////////////////////////////////////
+
+
+
+

@@ -1,0 +1,91 @@
+string $fileDialog = `file -q -sn`;
+if(!`gmatch $fileDialog "*lr*"`)
+{
+{error  "File name is wrong!";}
+}
+//////////////////////////////////////////////
+if (!`objExists setrgbaMshaderSG`)
+	{sets -renderable true -noSurfaceShader true -empty -name setrgbaMshaderSG;}
+if (!`objExists setrgbaMshader`)
+	{ string $shader = `shadingNode -asShader surfaceShader - n setrgbaMshader`; }
+if(`isConnected setrgbaMshader.outColor setrgbaMshaderSG.surfaceShader`==0)
+	{connectAttr -f setrgbaMshader.outColor setrgbaMshaderSG.surfaceShader;
+	 setAttr "setrgbaMshader.outColor" -type double3 0 0 0 ;
+	 setAttr "setrgbaMshader.outMatteOpacity" -type double3 0 0 0 ;
+	}
+/////////////////////////////////////////////
+if (!`objExists setrgbaGshaderSG`)
+	{sets -renderable true -noSurfaceShader true -empty -name setrgbaGshaderSG;}
+if (!`objExists rgbaGshader`)
+	{ string $shader = `shadingNode -asShader surfaceShader - n setrgbaGshader`; }
+if(`isConnected setrgbaGshader.outColor setrgbaGshaderSG.surfaceShader`==0)
+	{connectAttr -f setrgbaGshader.outColor setrgbaGshaderSG.surfaceShader;
+	 setAttr "setrgbaGshader.outColor" -type double3 0 1 0 ;
+	 setAttr "setrgbaGshader.outMatteOpacity" -type double3 1 1 1 ;
+	}
+//////////////////////////////////////////////
+if (!`objExists setrgbaBshaderSG`)
+	{sets -renderable true -noSurfaceShader true -empty -name setrgbaBshaderSG;}
+if (!`objExists rgbaBshader`)
+	{ string $shader = `shadingNode -asShader surfaceShader - n setrgbaBshader`; }
+if(`isConnected setrgbaBshader.outColor setrgbaBshaderSG.surfaceShader`==0)
+	{connectAttr -f setrgbaBshader.outColor setrgbaBshaderSG.surfaceShader;
+	 setAttr "setrgbaBshader.outColor" -type double3 0 0 1 ;
+	 setAttr "setrgbaBshader.outMatteOpacity" -type double3 1 1 1 ;
+	}
+/////////////////////////////////////////////
+
+if (!`objExists setRIMshaderSG`)
+	{sets -renderable true -noSurfaceShader true -empty -name setRIMshaderSG;}
+if (!`objExists setRIMshader`)
+	{ string $shader = `shadingNode -asShader surfaceShader - n setRIMshader`; }
+if (!`objExists setRIMtexture`)
+{string $texture = `shadingNode -asTexture ramp -n setRIMtexture`;}
+
+if(`isConnected setRIMshader.outColor setRIMshaderSG.surfaceShader`==0)
+{
+connectAttr -f setRIMshader.outColor setRIMshaderSG.surfaceShader;
+connectAttr -f setRIMtexture.outColor setRIMshader.outColor;
+removeMultiInstance -break true setRIMtexture.colorEntryList[2];
+setAttr setRIMtexture.type 1;
+setAttr "setRIMtexture.colorEntryList[1].color" -type double3 0 1 0 ;
+setAttr "setRIMtexture.colorEntryList[1].position" 0.65;
+setAttr "setRIMtexture.colorEntryList[0].color" -type double3 1 0 0 ;
+setAttr "setRIMtexture.colorEntryList[0].position" 0.6;
+}
+//////////////////////////////////////////////////
+string $renderPass[] = `listTransforms "-type surfaceShape"`;
+
+for($renderObj in $renderPass)
+{
+	if((`gmatch $renderObj "*mateRGBR*"`)||(`gmatch $renderObj "*:*mateRGBR*"`))
+	{
+	  select $renderObj;
+	  sets -e -forceElement setRIMshaderSG;
+	}
+	else if((`gmatch $renderObj "*mateRGBB*"`)||(`gmatch $renderObj "*:*mateRGBB*"`))
+	{
+	  select $renderObj;
+	  sets -e -forceElement setrgbaBshaderSG;
+	}
+	else if((`gmatch $renderObj "*mateRGBG*"`)||(`gmatch $renderObj "*:*mateRGBG*"`))
+	{
+	  select $renderObj;
+	  sets -e -forceElement setrgbaGshaderSG;
+	}
+	else
+	{
+	  select $renderObj;
+	  sets -e -forceElement setrgbaMshaderSG;
+	}
+
+}
+select -cl;
+
+setAttr "miDefaultOptions.rayTracing" 0;
+
+/////////////////////////////////////////////////////////////////////////
+string $regularExpr = "lr_.*_f";
+string $saveAsname = `substitute $regularExpr $fileDialog "lr_rgb_f"`;
+file  -rename $saveAsname;
+file -f -save;

@@ -1,0 +1,115 @@
+//给定一个常用名规范，点copy后可以在通道档中手动改变文件名，然后点保存
+//////////////////////////////////////////////////////////////////////
+global proc CopyAniNames()
+{
+string $CopyAni=`textFieldButtonGrp -q -tx "CopyAniNameItem"`;
+string $baseCopyAni=basenameEx($CopyAni);
+int $version=`about -f`;
+if($version>2009)
+    {
+     string $saveAsname[]=`fileDialog2 -fm 0 -cap "SaveFileAsTheGiveName" -ff "*.mb" -dir $baseCopyAni`;
+     file  -rename $saveAsname[0];
+     string $nameString=("[a-z]*"+"_"+"e*"+"_"+"p*"+"_"+"s*"+"_"+"[a-z]*"+"("+"[0-9]*[0-9]"+")"+"_"+"v*[0-9]"+".mb");
+     string $checkFileName=basename($saveAsname[0],"");
+     if(`gmatch $checkFileName  $nameString`){file -f -save;deleteUI -wnd "saveFileName";}
+     else if(""==$checkFileName){}
+     else{error "File Name is  nonstandard";}
+    }
+else
+    {
+     string $saveAsname=`fileDialog -m 1 -dm "*.mb" -title "SaveFileAsTheGiveName" -dfn $CopyAni`;
+	  file  -rename $saveAsname;
+     string $nameString=("[a-z]*"+"_"+"e*"+"_"+"p*"+"_"+"s*"+"_"+"[a-z]*"+"("+"[0-9]*[0-9]"+")"+"_"+"v*[0-9]"+".mb");
+     string $checkFileName= basename($saveAsname,"");
+     if(`gmatch $checkFileName  $nameString`){file -f -save;deleteUI -wnd "saveFileName";}
+     else if(""==$checkFileName){}
+     else{error "File Name is  nonstandard";}
+    }
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+global proc CopyRenNames()
+{
+string $CopyRen=`textFieldButtonGrp -q -tx "CopyRenNameItem"`;
+string $baseCopyRen=basenameEx($CopyRen);
+int $version=`about -f`;
+if($version>2009)
+    {
+     string $saveAsname[]=`fileDialog2 -fm 0 -cap "SaveFileAsTheGiveName" -ff "*.mb" -dir $baseCopyRen`;
+     file  -rename $saveAsname[0];
+     string $nameString=("[a-z]*"+"_"+"e*"+"_"+"p*"+"_"+"s*"+"_"+"[a-z]*"+"("+"[a-z]*"+"_"+"[a-z][a-z][a-z]"+")"+"("+"[0-9]*[0-9]"+")"+"_"+"v*[0-9]"+".mb");
+     string $checkFileName=basename($saveAsname[0],"");
+     if(`gmatch $checkFileName  $nameString`){file -f -save;deleteUI -wnd "saveFileName";}
+     else if(""==$checkFileName){}
+     else{error "File Name is  nonstandard";}
+    }
+else
+    {
+     string $saveAsname=`fileDialog -m 1 -dm "*.mb" -title "SaveFileAsTheGiveName" -dfn $baseCopyRen`;
+	  file  -rename $saveAsname;
+     string $nameString=("[a-z]*"+"_"+"e*"+"_"+"p*"+"_"+"s*"+"_"+"[a-z]*"+"("+"[a-z]*"+"_"+"[a-z][a-z][a-z]"+")"+"("+"[0-9]*[0-9]"+")"+"_"+"v*[0-9]"+".mb");
+     string $checkFileName=basename($saveAsname,"")+".mb";
+     if(`gmatch $checkFileName  $nameString`){file -f -save;deleteUI -wnd "saveFileName";}
+     else if(""==$checkFileName){}
+     else{error "File Name is  nonstandard";}
+    }
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+global proc CopyRenEyeNames()
+{
+string $CopyRenEye=`textFieldButtonGrp -q -tx "CopyRenEyeNameItem"`;
+string $baseCopyRenEye=basenameEx($CopyRenEye);
+int $version=`about -f`;
+if($version>2009)
+    {
+     string $saveAsname[]=`fileDialog2 -fm 0 -cap "SaveFileAsTheGiveName" -ff "*.mb" -dir $baseCopyRenEye`;
+     file  -rename $saveAsname[0];
+     string $nameString=("[a-z]*"+"_"+"e*"+"_"+"p*"+"_"+"s*"+"_"+"[a-z]*"+"("+"[a-z]*"+"_"+"[a-z][a-z][a-z]"+")"+"("+"[0-9]*[0-9]"+")"+"_[l-r]+_"+"v*[0-9]"+".mb");
+     string $checkFileName=basename($saveAsname[0],"");
+     if(`gmatch $checkFileName  $nameString`){file -f -save;deleteUI -wnd "saveFileName";}
+     else if(""==$checkFileName){}
+     else{error "File Name is  nonstandard";}
+    }
+else
+    {
+     string $saveAsname=`fileDialog -m 1 -dm "*.mb" -title "SaveFileAsTheGiveName" -dfn $baseCopyRenEye`;
+	  file  -rename $saveAsname;
+     string $nameString=("[a-z]*"+"_"+"e*"+"_"+"p*"+"_"+"s*"+"_"+"[a-z]*"+"("+"[a-z]*"+"_"+"[a-z][a-z][a-z]"+")"+"("+"[0-9]*[0-9]"+")"+"_[l-r]+_"+"v*[0-9]"+".mb");
+     string $checkFileName=basename($saveAsname,"")+".mb";
+     if(`gmatch $checkFileName  $nameString`){file -f -save;deleteUI -wnd "saveFileName";}
+     else if(""==$checkFileName){}
+     else{error "File Name is  nonstandard";}
+    }
+}
+/////////////////////////////////////////////////////////////////////////
+if(`window -ex "saveFileName"`) deleteUI -wnd "saveFileName";
+window  -t "saveFileName"  "saveFileName" ;
+columnLayout;
+textFieldButtonGrp 
+	-ed 0
+	-columnWidth 1 100 
+	-columnWidth 2 300 
+	-label "AnimatinName" 
+	-text "pro_e001_p001_s001_ani(150)_v001.mb" 
+	-buttonLabel "Copy"
+	-buttonCommand "CopyAniNames()"
+	 "CopyAniNameItem";
+textFieldButtonGrp 
+	-ed 0
+	-columnWidth 1 100 
+	-columnWidth 2 300 
+	-label "RenderAniName" 
+	-text "pro_e001_p001_s001_ren(ch_col)(150)_v001.mb" 
+	-buttonLabel "Copy" 
+	-buttonCommand "CopyRenNames()"
+	"CopyRenNameItem";
+textFieldButtonGrp 
+	-ed 0
+	-columnWidth 1 100 
+	-columnWidth 2 300 
+	-label "RenderEyeName" 
+	-text "pro_e001_p001_s001_ren(ch_col)(150)_lr_v001.mb" 
+	-buttonLabel "Copy" 
+	-buttonCommand "CopyRenEyeNames()"
+	"CopyRenEyeNameItem";
+showWindow "saveFileName";
+///////////////////////////////////////////////////////////////////////////

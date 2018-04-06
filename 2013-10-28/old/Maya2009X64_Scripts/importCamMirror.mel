@@ -1,0 +1,3 @@
+string $cammirror="//192.168.0.188/plug-ins/Maya2009X64_Scripts/CamMirror.mb";
+
+file -import $cammirror;

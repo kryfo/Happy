@@ -1,0 +1,21 @@
+string $rigFile[]=`file -q -r`;
+
+if(size($rigFile)>0)
+{
+int $i;
+for($i=0;$i<size($rigFile);$i++)
+  {
+string $rigNode =`file -q -rfn $rigFile[$i]`;
+if(`gmatch   $rigFile[$i] "*rig*"`)
+	{
+	string $msFile  = `substitute "rig" $rigFile[$i] "ms"`;
+	file -loadReference $rigNode -type "mayaBinary" -options "v=0;p=17" $msFile;
+	}
+
+else if((`gmatch   $rigFile[$i] "*mo*"`))
+	{
+	string $msFile  = `substitute "mo" $rigFile[$i] "ms"`;
+	file -loadReference $rigNode -type "mayaBinary" -options "v=0;p=17" $msFile;
+	}
+  }
+}

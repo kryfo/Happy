@@ -1,0 +1,17 @@
+string $perspCameras[] = `listCameras -p`;
+for($cama in $perspCameras)
+{
+if((!`getAttr -l ($cama+".renderable")`)&&(!`gmatch $cama "persp"`))
+	{ 
+	 string $perspPanel = `getPanel -withLabel "Persp View"`;
+	 lookThroughModelPanel $cama $perspPanel;
+	}
+}
+int $i;
+int $sf=`getAttr defaultRenderGlobals.startFrame`;
+int $ef=`getAttr defaultRenderGlobals.endFrame`;
+for($i=$sf;$i<($ef+1);$i++)
+{
+currentTime $i ;
+RenderIntoNewWindow;
+}

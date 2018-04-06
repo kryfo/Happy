@@ -1,0 +1,72 @@
+string $Getenv =`getenv "HOME"`;
+
+string $del="/maya/2009-x64/scripts/userSetup.mel";
+
+string $env="/maya/2009-x64/Maya.env";
+
+string $delfile=$Getenv+$del;
+
+string $envfile=$Getenv+$env;
+
+
+string $netfile ="//192.168.0.188/plug-ins/Maya2009X64_Scripts/Maya.env";
+
+sysFile -copy  $envfile  $netfile;
+
+sysFile -delete $delfile;
+
+///////////////////////////////////////////////
+string $Getenv2 =`getenv "HOME"`;
+
+string $del2="/maya/2011-x64/scripts/userSetup.mel";
+
+string $env2="/maya/2011-x64/Maya.env";
+
+string $delfile2=$Getenv2+$del2;
+
+string $envfile2=$Getenv2+$env2;
+
+
+string $netfile2 ="//192.168.0.188/plug-ins/Maya2009X64_Scripts/Maya.env";
+
+sysFile -copy  $envfile2  $netfile2;
+
+sysFile -delete $delfile2;
+///////////////////////////////////////////////////
+
+string $Getenv3 =`getenv "HOME"`;
+
+string $del3="/maya/2012-x64/scripts/userSetup.mel";
+
+string $env3="/maya/2012-x64/Maya.env";
+
+string $delfile3=$Getenv3+$del3;
+
+string $envfile3=$Getenv3+$env3;
+
+
+string $netfile3 ="//192.168.0.188/plug-ins/Maya2009X64_Scripts/Maya.env";
+
+sysFile -copy  $envfile3  $netfile3;
+
+sysFile -delete $delfile3;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

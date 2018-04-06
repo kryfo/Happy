@@ -1,0 +1,4 @@
+//////////////////////判断名字是否正确
+string $checkFileName=`file -q -sn -shn`;
+string $nameString=("[a-z]*"+"_"+"e*"+"_"+"p*"+"_"+"s*"+"_"+"[a-z]*"+"("+"[a-z]*_[a-z][a-z][a-z]"+")"+"("+"[0-9]*[0-9]"+")"+"_*"+"v*[0-9]"+".mb");
+if(!`gmatch $checkFileName  $nameString`){warning "File Name is  nonstandard";}

@@ -1,0 +1,14 @@
+global proc SelCurves()
+{
+    string $selNameSpaces[]=`ls -sl`;
+    string $nameS=$selNameSpaces[0];
+    string $space=`match ".*:" $nameS`;
+    string $nurbsCurves[]=`ls -type "nurbsCurve"`;
+    for($nurb in $nurbsCurves)
+        {
+            if(startsWith($nurb,$space))
+                select -add $nurb;
+        }
+}
+
+SelCurves();

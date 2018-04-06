@@ -1,0 +1,91 @@
+////////////////////////////////////////
+global proc LeftL()
+{
+string $selcams[]=`ls -sl`;
+int $i =size($selcams);
+if($i==1)
+{ 
+if( !`objExists CharLight_left` ) 
+	{
+  string $charlight="//192.168.0.188/plug-ins/Maya2009X64_Scripts/CharLight_left.mb";
+  file -import $charlight;
+	}
+orientConstraint -offset 0  0  0 -skip x  -skip z -weight 1 $selcams[0] CharLight_left;
+select $selcams[0];
+}
+
+else
+    {select -cl;
+error "You must select only one camera!";	
+    }
+}
+
+/////////////////////////////////////////
+global proc BLeftL()
+{
+string $selcams[]=`ls -sl`;
+int $i =size($selcams);
+if($i==1)
+{ 
+if( !`objExists CharLight_Bleft` ) 
+	{
+  string $charlight="//192.168.0.188/plug-ins/Maya2009X64_Scripts/CharLight_Bleft.mb";
+  file -import $charlight;
+	}
+orientConstraint -offset 0  0  0 -skip x  -skip z -weight 1 $selcams[0] CharLight_Bleft;
+select $selcams[0];
+}
+
+else
+    {select -cl;
+error "You must select only one camera!";	
+    }
+}
+
+///////////////////////////////////////////////
+global proc RightL()
+{
+string $selcams[]=`ls -sl`;
+int $i =size($selcams);
+if($i==1)
+{ 
+if( !`objExists CharLight_right` ) 
+	{
+  string $charlight="//192.168.0.188/plug-ins/Maya2009X64_Scripts/CharLight_right.mb";
+  file -import $charlight;
+	}
+orientConstraint -offset 0  0  0 -skip x  -skip z -weight 1 $selcams[0] CharLight_right;
+select $selcams[0];
+}
+
+else
+    {select -cl;
+error "You must select only one camera!";	
+    }
+}
+
+////////////////////////////////////
+global proc BRightL()
+{
+string $selcams[]=`ls -sl`;
+int $i =size($selcams);
+if($i==1)
+{ 
+if( !`objExists CharLight_Bright` ) 
+	{
+  string $charlight="//192.168.0.188/plug-ins/Maya2009X64_Scripts/CharLight_Bright.mb";
+  file -import $charlight;
+	}
+orientConstraint -offset 0  0  0 -skip x  -skip z -weight 1 $selcams[0] CharLight_Bright;
+select $selcams[0];
+}
+
+else
+    {select -cl;
+error "You must select only one camera!";	
+    }
+}
+
+
+
+

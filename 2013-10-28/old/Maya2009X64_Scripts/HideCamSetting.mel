@@ -1,0 +1,17 @@
+string $headsdis[]=`headsUpDisplay -listHeadsUpDisplays`;
+
+for($heads in $headsdis)
+{
+headsUpDisplay -e -vis 0 $heads;
+}
+headsUpDisplay -e -vis 1 HUDViewAxis;
+
+string $cam[] = `ls -type camera`;
+string $camcam;
+for($camcam in $cam)
+{
+	setAttr ($camcam+".displaySafeAction")   0;
+	setAttr ($camcam+".displayResolution")   0;
+
+}
+

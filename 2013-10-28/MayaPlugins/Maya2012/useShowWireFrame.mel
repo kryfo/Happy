@@ -1,0 +1,4 @@
+////////////////////////ÏÔÊ¾Ïß¿ò
+//string $currentModelPanel=`getPanel -withFocus`;
+string $perspPanel = `getPanel -withLabel "Persp View"`;
+modelEditor -edit -wireframeOnShaded 1 $perspPanel;

@@ -1,0 +1,7 @@
+string $panel=`getPanel -withFocus`;
+modelEditor -e -allObjects  0 $panel;
+modelEditor -e -nurbsCurves 1 $panel;
+modelEditor -e -polymeshes  1 $panel;
+modelEditor -e -lights      1 $panel;
+modelEditor -e -cameras     1 $panel;
+modelEditor -e -dimensions  1 $panel;

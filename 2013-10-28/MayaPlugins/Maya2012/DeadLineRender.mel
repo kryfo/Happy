@@ -1,0 +1,131 @@
+//DeadLineRender 批量提交
+//界面
+if(`window -ex "DeadLineRender"`) deleteUI -window "DeadLineRender";
+window -s 1 "DeadLineRender" ;
+rowColumnLayout -numberOfColumns 3 -columnAttach 1 "right" 0 -columnWidth 1 100 -columnWidth 2 400 -columnWidth 3 100 "deadLayoutI";
+text -label "MayaFilePath" ;
+textField  mayafilepath;
+button -label "RunCommand" -c "RunCommand()" ;
+separator -style "none";
+setParent..;
+rowColumnLayout -numberOfColumns 1  -columnAttach 1 "left" 0 "deadLayoutII";
+//text -label "MayaFilePath" -align "left"  -p "deadLayoutII";
+
+showWindow "DeadLineRender";
+
+//内核
+global proc RunCommand()
+{
+
+string $ServerPro="//RENDERSERVERII/MayaPro/";   //路径
+
+string $text=`textField -q -text  mayafilepath`;
+string $text=substituteAllString($text, "\\", "/")+"/";
+
+string $files[]=`getFileList -folder $text -filespec "*e*_*p*_*s*_*ren*.mb"`;
+global string $Gpro; 
+global string $Gepisode;
+global string $Gparagraph;
+global string $Gscene;
+global string $Glayer;
+int $total=size($files);
+int $i=0;
+    for($file in $files)
+        { $i++;
+        string $pro=`match "[a-z]+" $file`;
+        $Gpro=$pro;
+        
+        if(`match ("e[0-9]+"+"[a-z]+") $file`=="") {$episode=`match "e[0-9]+" $file`;$Gepisode=$episode;}
+        else{$episode=`match ("e[0-9]+"+"[a-z]+") $file`;$Gepisode=$episode;}
+        
+        
+        if(`match ("p[0-9]+"+"[a-z]+") $file`==""){$paragraph=`match "p[0-9]+" $file`;$Gparagraph=$paragraph;}
+        else{$paragraph=`match ("p[0-9]+"+"[a-z]+") $file`;$Gparagraph=$paragraph;} 
+        
+        if(`match ("s[0-9]+"+"[a-z]+") $file`==""){$scene=`match "s[0-9]+" $file`;$Gscene=$scene;}
+        else{$scene=`match ("s[0-9]+"+"[a-z]+") $file`;$Gscene=$scene;}
+        
+        if(`match "\\([a-z]+_[a-z]+\\)" $file`==""){$layer="scenes";$Glayer=$layer;}
+        else{$layer=`match "\\([a-z]+_[a-z]+\\)" $file`;$layer=`match "[a-z]+_[a-z]+" $layer`;$Glayer=$layer;}
+
+        string $fileversion=endString(basenameEx($file),4);  
+    
+        string $mayaPros[] = `getFileList -folder $ServerPro`;
+        for($mayapro in $mayaPros)
+          {
+            if($mayapro==$Gpro)
+  	      {
+                 if(!`filetest -d  ($ServerPro+$mayapro+"/"+"renderScenes"+"/"+$Gpro+"_"+$Gepisode+"/"+$Gpro+"_"+$Gepisode+"_"+$Gparagraph+"/"+$Gpro+"_"+$Gepisode+"_"+$Gparagraph+"_"+$Gscene+"/")`)
+                   {sysFile -makeDir ($ServerPro+$mayapro+"/"+"renderScenes"+"/"+$Gpro+"_"+$Gepisode+"/"+$Gpro+"_"+$Gepisode+"_"+$Gparagraph+"/"+$Gpro+"_"+$Gepisode+"_"+$Gparagraph+"_"+$Gscene+"/");}
+        
+                 sysFile -copy  ($ServerPro+$mayapro+"/"+"renderScenes"+"/"+$Gpro+"_"+$Gepisode+"/"+$Gpro+"_"+$Gepisode+"_"+$Gparagraph+"/"+$Gpro+"_"+$Gepisode+"_"+$Gparagraph+"_"+$Gscene+"/"+$file) ($text+$file);
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                 string $tempFileGiveFrame=`match "\\([0-9]+\\)" $file`;
+                 string $FileGiveFrame=`match "[0-9]+" $tempFileGiveFrame`;
+                 string $ScenePro=$ServerPro+$pro;
+/////////$ScenePro=substituteAllString($ServerPro,"/","\\");
+        
+                 string $SceneImg=($ServerPro+$mayapro+"/"+"renderimages"+"/"+$Gpro+"_"+$Gepisode+"/"+$Gpro+"_"+$Gepisode+"_"+$Gparagraph+"/"+$Gpro+"_"+$Gepisode+"_"+$Gparagraph+"_"+$Gscene+"/"+$Glayer+"_"+$fileversion+"/");
+/////////$SceneImg=substituteAllString($SceneImg,"/","\\");
+                 string $SceneFle=($ServerPro+$mayapro+"/"+"renderScenes"+"/"+$Gpro+"_"+$Gepisode+"/"+$Gpro+"_"+$Gepisode+"_"+$Gparagraph+"/"+$Gpro+"_"+$Gepisode+"_"+$Gparagraph+"_"+$Gscene+"/"+$file);
+/////////$SceneFle=substituteAllString($SceneFle,"/","\\");
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                string $JobInfoFile="D:/JobInfoFile.job";
+                string $Name="Name"+"="+$file+"\r\n";
+                string $Frames="Frames"+"="+100+"-"+$FileGiveFrame+"\r\n";
+        
+                $fileId=`fopen $JobInfoFile "w"`;
+                fwrite $fileId "Plugin=MayaCmd\r\n";
+                fwrite $fileId $Name;
+                fwrite $fileId "Pool=none\r\n";
+                fwrite $fileId "Group=none\r\n";
+                fwrite $fileId "Priority=50\r\n";
+                fwrite $fileId $Frames;
+                fwrite $fileId "ChunkSize=5\r\n";
+                fclose $fileId;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                string $MayaPluginInfo="D:/MayaPluginInfo.job";
+                string $SceneFile="SceneFile"+"="+$SceneFle+"\r\n";
+                string $ProjectPath="ProjectPath"+"="+$ScenePro+"\r\n";
+                string $OutputFilePath="OutputFilePath"+"="+$SceneImg+"\r\n";
+                string $Resolution="CommandLineOptions"+"="+"-x 1280 -y 720"+"\r\n";
+                $fileIt=`fopen $MayaPluginInfo "w"`;
+                fwrite $fileIt $SceneFile;
+                 if($Gpro=="jjxf")
+       	 {fwrite $fileIt $Resolution;}
+                fwrite $fileIt "Version=2011\r\n";
+                fwrite $fileIt "Build=64bit\r\n";
+                fwrite $fileIt $ProjectPath;
+////////////////fwrite $fileIt "StrictErrorChecking=True\r\n";
+////////////////fwrite $fileIt "LocalRendering=False\r\n";
+////////////////fwrite $fileIt "MaxProcessors=0\r\n";
+                fwrite $fileIt $OutputFilePath;
+                fwrite $fileIt "Renderer=File\r\n";
+////////////////fwrite $fileIt "IgnoreError211=False\r\n";
+////////////////fwrite $fileIt "CommandLineOptions=\r\n";
+////////////////fwrite $fileIt "UseOnlyCommandLineOptions=0\r\n";
+                fclose $fileIt;
+        
+                string $SofeWare="deadlinecommand.exe";
+                string $JobInfoFile="D:/JobInfoFile.job";
+                string $MayaPluginInfo="D:/MayaPluginInfo.job";
+                string $command=$SofeWare+" "+$JobInfoFile+" "+$MayaPluginInfo;
+                system($command);
+                sysFile -delete  "D:/JobInfoFile.job";
+                sysFile -delete  "D:/MayaPluginInfo.job";
+///////////////////////////////////////////////////////////////////////////////
+		string $putname=size($files)+" Files up to render and "+$i+" crrent file is uping";
+		text -label $putname -align "left"  -p "deadLayoutII";
+                       }
+                    }
+                 }
+
+if(`window -ex "DeadLineRender"`) deleteUI -window "DeadLineRender";
+confirmDialog -title "Confirm" -message "succeed submit" -button "OK";  	
+
+}
+
+
+
+
+

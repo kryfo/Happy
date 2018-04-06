@@ -1,0 +1,28 @@
+string $fileDialog = `fileDialog`;
+if(`gmatch $fileDialog "*lr*"`)
+{
+file -f -o $fileDialog;
+}
+else
+{error  "File name is wrong!";}
+
+
+string $filePath = dirname($fileDialog)+"/";
+
+string $filename[]  =`getFileList -folder ($filePath+"/") -filespec "*.mb"`;
+for($filezdp in $filename)
+{   $filemake=$filePath+$filezdp;
+
+	if(`gmatch filemake "*lr_col_f*"`)
+	{
+	  file -f -o $filemake;
+	  source SetMentalrayRenderSetting;
+	  source ZdpShader;
+	  string $fileid=`file -q -sn`;
+	  string $regular = "lr_col_f";
+	  string $saveAsname = `substitute $regular $fileid "lr_zdp_f"`;
+	  file  -rename $saveAsname;
+	  file -f -save;
+	}
+}
+file -f -new;

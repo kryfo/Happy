@@ -1,0 +1,142 @@
+
+////////////////////////////////////////////////////////////
+
+if(!`pluginInfo -q -l animImportExport`)
+{loadPlugin -quiet animImportExport;}; 
+
+////////////////////////////////////////////////////////////
+string $path ="//MAYAPROSP/plug-ins/AnimationDatabase/AniamtionCatch/";
+
+if(`window -ex ChangeCatch`) deleteUI -window "ChangeCatch";
+window -menuBar 1 -title "ChangeCatch"   -widthHeight 410 600  ChangeCatch;
+columnLayout -columnAttach "both" 1  -columnWidth 405 Layoutmain;
+text -label "ª∂¿÷ø∆ºº" -font "boldLabelFont";
+text -l "AnimationLibrary" -font "boldLabelFont";
+textField -tx $path -font "boldLabelFont";
+
+
+separator;setParent ..;
+
+gridLayout -numberOfColumns 2 -cellWidthHeight 200 50 LayoutOne;
+
+optionMenu -label "SelectOneCharacter"   -changeCommand updataChar SelectOneCharacter;
+ string $pathItem[]=`getFileList -folder $path`;
+ int $i;
+ for($i=0;$i<size($pathItem);$i++) 
+       { 
+        if ($pathItem[$i]!="Thumbs.db")
+             {menuItem -label $pathItem[$i] $pathItem[$i];}
+       }
+
+
+optionMenu -label "SelectPossChange"  -changeCommand updataItem SelectPossChange;
+ string $ItemI = `optionMenu -q -v SelectOneCharacter`;
+ string $pathII= $path+$ItemI+"/";
+ string $pathItemII[]=`getFileList -folder $pathII`;
+ int $ii;
+ for($ii=0;$ii<size($pathItemII);$ii++) 
+       { menuItem -label $pathItemII[$ii]  $pathItemII[$ii];}
+ setParent ..;
+
+gridLayout -numberOfColumns 4 -cellWidthHeight 100 100 -parent "ChangeCatch" LayoutTwo;
+ string $ItemI = `optionMenu -q -v SelectOneCharacter`;
+ string $ItemII = `optionMenu -q -v SelectPossChange`;
+ string $pathII=$path+$ItemI+"/"+$ItemII+"/";
+ string $pathItemIII[]=`getFileList -folder $pathII -filespec "*.bmp"`;
+	int $i;
+ for($i=0;$i<size($pathItemIII);$i++)
+ {
+string $iconButtonicon=$path+$ItemI+"/"+$ItemII+"/"+$pathItemIII[$i];	
+string $ItemName=basenameEx($pathItemIII[$i]);
+string $avifile=$path+$ItemI+"/"+$ItemII+"/"+$ItemName+".avi";
+string $animationfile=$path+$ItemI+"/"+$ItemII+"/"+$ItemName+".anim";
+
+iconTextButton -style "iconAndTextVertical" -image1 $iconButtonicon -label $ItemName;
+
+        popupMenu ;
+		menuItem -l "PlayMovie"   -c ("playavi(\"" + $avifile+ "\")");
+		menuItem -l "InsertAnim"  -c ("InsertAnim(\"" + $animationfile + "\")");
+		menuItem -l "ReplaceAnim" -c ("ReplaceAnim(\"" + $animationfile + "\")");
+		menuItem -l "OpenPath"    -c ("OpenPath(\"" + $animationfile + "\")");
+ }
+
+showWindow ChangeCatch;
+
+///////////////////////////////////////////////////////////
+
+global proc playavi(string $aviPath)
+{
+ string $result = substituteAllString($aviPath, "/", "\\");
+system("load" + $result);
+}
+
+global proc InsertAnim(string $animpath)
+{
+$curTime = "time=" + `currentTime -q` + "";
+string $curoption = ";targetTime=3;"+ $curTime +";copies=1;option=insert;pictures=0;connect=0;";
+file -import -type "animImport" -options $curoption -pr -loadReferenceDepth "all" $animpath;
+}
+
+global proc ReplaceAnim(string $animIIpath)
+{
+file -import -type "animImport" -options ";targetTime=4;copies=1;option=replaceCompletely;pictures=0;connect=0;" -pr -loadReferenceDepth "all" $animIIpath;
+}
+
+
+/////////////////////////////////////////////////
+global proc updataChar()
+{ 
+ string $path ="//MAYAPROSP/plug-ins/AnimationDatabase/AniamtionCatch/";
+ string $nowItem = `optionMenu -q -v SelectOneCharacter`;
+ string $pathII=$path+$nowItem+"/";
+ string $pathItemII[]=`getFileList -folder $pathII`;
+ deleteUI -control SelectPossChange;
+ optionMenu  -label "SelectPossChange" -p "LayoutOne" -changeCommand updataItem SelectPossChange;
+ int $ii;
+ for($ii=0;$ii<size($pathItemII);$ii++) 
+       {
+        if($pathItemII[$ii]!="Thumbs.db")
+         {menuItem -label $pathItemII[$ii]  $pathItemII[$ii];}
+        }
+   updataItem; 
+}
+/////////////////////////////////////////////////
+global proc OpenPath(string $pathfile)
+{ 
+    string $dirname = dirname( $pathfile );
+    string $result=substituteAllString($dirname, "/", "\\");
+    system("load" + $result);    
+}
+
+///////////////////////////////////////////////////////////////
+global proc updataItem()
+{ 
+if(`layout -ex LayoutTwo`)deleteUI -layout LayoutTwo;
+gridLayout -numberOfColumns 4 -cellWidthHeight 100 100 -parent "ChangeCatch" LayoutTwo;
+string $path ="//MAYAPROSP/plug-ins/AnimationDatabase/AniamtionCatch/";
+string $ItemI = `optionMenu -q -v SelectOneCharacter`;
+string $ItemII = `optionMenu -q -v SelectPossChange`;
+string $pathII=$path+$ItemI+"/"+$ItemII+"/";
+string $pathItemIII[]=`getFileList -folder $pathII -filespec "*.bmp"`;	
+int $i; 
+for($i=0;$i<size($pathItemIII);$i++)
+ {
+if($pathItemIII[$i]!="Thumbs.db")
+  {
+string $iconButtonicon=$path+$ItemI+"/"+$ItemII+"/"+$pathItemIII[$i];	
+string $ItemName=basenameEx($pathItemIII[$i]);
+string $avifile=$path+$ItemI+"/"+$ItemII+"/"+$ItemName+".avi";
+string $animationfile=$path+$ItemI+"/"+$ItemII+"/"+$ItemName+".anim";
+
+iconTextButton -style "iconAndTextVertical" -image1 $iconButtonicon -label $ItemName  -c ("playavi(\"" + $avifile+ "\")");
+
+        popupMenu ;
+		
+		menuItem -l "PlayMovie"   -c ("playavi(\"" + $avifile+ "\")");
+		menuItem -l "InsertAnim"  -c ("InsertAnim(\"" + $animationfile + "\")");
+		menuItem -l "ReplaceAnim" -c ("ReplaceAnim(\"" + $animationfile + "\")");
+		menuItem -l "OpenPath"    -c ("OpenPath(\"" + $animationfile + "\")");
+		  }
+ }
+}
+///////////////////////////////////////////////////////////

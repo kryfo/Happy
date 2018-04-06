@@ -1,0 +1,98 @@
+global string $gMainWindow;
+menu  -p $gMainWindow  -label "MayaNewPro" -to 1 -aob 1;
+menuItem -subMenu 1 -tearOff 1 -label "General";
+	menuItem -label "useFindFiles"                      -command  "source useFindFiles.mel" ;
+	menuItem -label "useFileName"               -command  "source useFileName.mel" ;
+	menuItem -label "useMrSetting"               -command  "source useMrSetting.mel" ;
+
+
+	setParent -menu ..;
+menuItem -divider true;
+menuItem -subMenu 1 -tearOff 1 -label "CommonTool";
+	menuItem -label "useFindFiles"                 	  -command  "source useFindFiles.mel" ;
+	menuItem -label "DelLink"                         -command  "source DeleteLightLink.mel";
+	menuItem -label "FindTexture"                 	  -command  "source FileTextureManager.mel" ;
+	menuItem -label "GetPath"                         -command  "source ChangePath.mel" ;
+	menuItem -divider true;
+	setParent -menu ..;
+menuItem -divider true;
+menuItem -subMenu 1 -tearOff 1 -label "Animation";
+
+	menuItem -label "AniSetting"               -command  "source useAnimationSetting.mel" ;
+	menuItem -label "CamShow"                  -command  "source cameraShow.mel" ;
+	menuItem -label "CamHide"                  -command  "source cameraHide.mel" ;
+	menuItem -label "PlayAvi"                  -command  "source Playblast.mel";
+	menuItem -divider true;
+	menuItem -label "PoseMan"                -command  "source PoseMAN.mel" ;
+	menuItem -label "ChangeCatch"            -command  "source animationCatch.mel";
+	menuItem -label "SelCurves"              -command  "source selCurves.mel";
+
+
+	setParent -menu ..;
+menuItem -divider true;
+menuItem -subMenu 1 -tearOff 1 -label "Rendering";
+
+	menuItem -subMenu 1 -tearOff 1 -label "RenderLight";
+	menuItem -label "aLeftLight"              -command  "source Light_Aleft.mel" ;
+	menuItem -label "aRightLight"             -command  "source Light_Aright.mel" ;
+	menuItem -label "bLeftLight"              -command  "source Light_Bleft.mel" ;
+	menuItem -label "bRightLight"             -command  "source Light_Bright.mel" ;
+	menuItem -label "sealight"                -command  "source sealight.mel" ;
+
+
+	setParent -menu ..;
+	menuItem -divider true;
+	menuItem -subMenu 1 -tearOff 1 -label "RenderLayer";
+	menuItem -label "makeOCCFile"                 -command  "source useFileToOCC.mel" ;
+	menuItem -label "makeNRMFile"                -command  "source useFileToNRM.mel" ;
+	menuItem -label "makeMZDFile"                -command  "source useFileToMRZDP.mel" ;
+	menuItem -label "makeSHDFile"                 -command  "source useFileToSHD.mel" ;
+	menuItem -label "makeRGBFile"                 -command  "source useFileToRGB.mel" ;
+	menuItem -label "makeLGTFile"                 -command  "source useFileToLGT.mel" ;
+	menuItem -label "makeMOBFile"                -command  "source useFileToMOB.mel" ;
+	menuItem -label "makeRIMFile"                 -command  "source useFileToRIM.mel" ;
+
+
+	setParent -menu ..;
+	menuItem -divider true;
+	menuItem -subMenu 1 -tearOff 1 -label "RenderTool";
+	menuItem -label "MSFile"                  	 -command  "source useMoRigtoMs.mel";
+	menuItem -label "SmoothI"              	  -command "source  CharSmoothOne.mel";
+	menuItem -label "SmoothII"            	  -command "source  CharSmoothTWO.mel";
+	menuItem -label "SetFileFilter"          	  -command "source  setFileFilter.mel";
+	menuItem -label "MatteShader"        	  -command "source  MatteShader.mel";
+
+
+
+	setParent -menu ..;
+	menuItem -divider true;
+	menuItem -subMenu 1 -tearOff 1 -label "SubmitRender";
+	menuItem -label "ScreenRender"       	                   -command  "source  ScreenRender.mel";	
+	menuItem -label "DeadLineRender"                           -command  "source DeadLineRender.mel" ;
+	menuItem -label "SingeDeadLine"                            -command  "source DeadLineRenerSinge.mel" ;
+	menuItem -label "DeadLineRenderModify"                     -command  "source DeadLineRenderModify.mel" ;
+	menuItem -label "SingeDeadLineModify"                      -command  "source DeadLineRenerSingeModify.mel" ;
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+global proc toPAL() 
+{
+ currentUnit -t "pal"  -ua 1;
+// string $nameString=("[a-z]*"+"_"+"e*"+"_"+"p*"+"_"+"s*"+".mb");
+//string $filename=`file -q -sn -shn`;
+//if(!`gmatch $filename  $nameString`)
+//  {
+//playbackOptions -min 100 -ast 100 -max 200 -aet 200;
+//currentTime 100;
+ // }
+setAttr "defaultResolution.width" 1024;
+setAttr "defaultResolution.height" 576;
+setAttr "defaultResolution.deviceAspectRatio" 1.777;
+setAttr "defaultResolution.pixelAspect" 1;
+setAttr "perspShape.farClipPlane" 100000;
+setAttr "perspShape.renderable" 0;
+}
+
+scriptJob -event "SceneOpened"  toPAL;
+
+
+

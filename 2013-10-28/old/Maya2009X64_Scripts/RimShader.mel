@@ -1,0 +1,127 @@
+
+string $lightm[]=`ls -lights`;
+if (size($lightm) > 0)
+		{
+			for ($item in $lightm)
+			{
+				setAttr ($item+".v") 0;
+			}
+
+		}
+
+
+///////////////隐藏灯光
+string $lights[]=`ls -lights`;
+for ($item in $lights) {setAttr ($item+".v") 0;}
+
+///////////////隐藏流体渲染属性
+string $fluidshapes[] =`ls -type "fluidShape"`;
+for($fluidone in $fluidshapes)
+{
+setAttr ($fluidone + ".primaryVisibility") 0;
+select -cl;
+}
+
+/////////////////隐藏体积材质渲染属性
+string $volumeFog[] =`ls -type "volumeFog"`;
+for($item in $volumeFog)
+{
+ string $itemFog[]=`hyperShade -objects $item`;
+ string $Fog[]=`ls -sl`;
+	if(size($Fog)>0)
+	{
+  	 for($fogOne in $Fog)
+	 {setAttr ($fogOne + ".primaryVisibility") 0;select -cl;}
+	}
+}
+/////////////////隐藏体积灯光渲染属性
+string $lightFog[] =`ls -type "lightFog"`;
+for($item in $lightFog)
+{
+ string $itemFog[]=`hyperShade -objects $item`;
+ string $Fog[]=`ls -sl`;
+	if(size($Fog)>0)
+	{
+  	 for($fogOne in $Fog)
+	 {setAttr ($fogOne + ".primaryVisibility") 0;select -cl;}
+	}
+}
+////////////////////////////设置物体属性MR不渲染
+//eyelash眼睫毛//eyebrow眉毛//eyepupil瞳孔//eyeglass眼镜//hideMrRender//如有新的加这个字节
+string $renderObjects[]=`ls -type "surfaceShape"`;
+for($hideMrRender in $renderObjects)
+{
+if((`gmatch $hideMrRender "*eyelash*"`)||(`gmatch $hideMrRender "*eyebrow*"`)||(`gmatch $hideMrRender "*eyepupil*"`)||(`gmatch $hideMrRender "*eyeglass*"`)||(`gmatch $hideMrRender "*hideMrRender*"`))
+select -r $hideMrRender;
+string $unRenderObjects[]=`listRelatives -parent`;
+select -r $unRenderObjects;
+string $selection[]=`ls -sl`;
+int $hi;
+
+for($hi=0; $hi<size($selection);$hi++)
+ {
+  setAttr ($selection[$hi]+".miDeriveFromMaya") 0;
+  setAttr ($selection[$hi]+".miHide") 1;
+  select -cl;
+ }
+}
+///////////////////////////////////////////
+
+
+
+
+//////////////////////////////////////////////////////////////////////////
+//生成ZD材质球
+if (!`objExists RIMshaderSG`)
+	{sets -renderable true -noSurfaceShader true -empty -name RIMshaderSG;}
+if (!`objExists RIMshader`)
+	{ string $shader = `shadingNode -asShader surfaceShader - n RIMshader`; }
+if (!`objExists RIMtexture`)
+{string $texture = `shadingNode -asTexture ramp -n RIMtexture`;}
+if (!`objExists RIMutility`)
+{string $utility = `shadingNode -asUtility samplerInfo -n RIMutility`;}
+if(`isConnected RIMshader.outColor RIMshaderSG.surfaceShader`==0)
+{
+connectAttr -f RIMshader.outColor RIMshaderSG.surfaceShader;
+connectAttr -f RIMtexture.outColor RIMshader.outColor;
+connectAttr -f RIMutility.facingRatio RIMtexture.vCoord;
+setAttr "RIMtexture.colorEntryList[2].color" -type double3 0 0 0 ;
+setAttr "RIMtexture.colorEntryList[2].position" 1;
+setAttr "RIMtexture.colorEntryList[1].color" -type double3 0 0 0 ;
+setAttr "RIMtexture.colorEntryList[1].position" 0.5;
+setAttr "RIMtexture.colorEntryList[0].color" -type double3 1 1 1 ;
+setAttr "RIMtexture.colorEntryList[0].position" 0;
+}
+/////选择面赋材质
+string $renderPass[] = `listTransforms "-type mesh"`;
+string $renderObj;
+for($renderObj in $renderPass)
+{
+select $renderObj;	
+sets -e -forceElement RIMshaderSG;
+}
+select -cl;
+
+if(`objExists ("*"+":"+"*eyepupilla*")`)
+{select -add  ("*"+":"+"*eyepupilla*");}
+
+if(`objExists ("*"+":"+"*eyelash*")`)
+{select -add   ("*"+":"+"*eyelash*");}
+
+if(`objExists ("*"+":"+"*eyebrow*")`)
+{select -add  ("*"+":"+"*eyebrow*");}
+
+if(`objExists ("*"+":"+"*eyeglass*")`)
+{select -add  ("*"+":"+"*eyeglass*");}
+
+string $occobjes[]=`ls -type "transform" -sl`;
+
+int $hi;
+for($hi=0; $hi<size($occobjes);$hi++)
+{
+setAttr ($occobjes[$hi]+".miDeriveFromMaya") 0;
+setAttr ($occobjes[$hi]+".miHide") 1;
+}
+select -cl;
+
+/////////////////////////////////////////////////////////////////////////

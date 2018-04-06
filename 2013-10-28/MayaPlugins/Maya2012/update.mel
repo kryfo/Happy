@@ -1,0 +1,27 @@
+string $version=`about -v`;
+string $MayaVersion=`match "[0-9]+" $version`;
+string $hexadecimal=`match "[a-z]+[0-9]+" $version`;
+
+string $Getenv =`getenv "HOME"`;
+
+string $env=$Getenv+"/maya/"+$MayaVersion+"-"+$hexadecimal+"/Maya.env";
+string $netEnv ="//mayaprosp/plug-ins/MayaPlugins/Maya2012/env/Maya.env";
+sysFile -copy  $env  $netEnv;
+
+
+//string $setUp=$Getenv+"/maya/"+$MayaVersion+"-"+$hexadecimal+"/scripts/userSetup.py";
+//string $netSetUp="//mayaprosp/plug-ins/MayaPlugins/Maya2012/Py/userSetup.py";
+//sysFile -copy  $setUp  $netSetUp;
+
+//string $manager=$Getenv+"/maya/"+$MayaVersion+"-"+$hexadecimal+"/scripts/yloveManager.pyc";
+//string $netManager="//mayaprosp/plug-ins/MayaPlugins/Maya2012/Py/yloveManager.pyc";
+//sysFile -copy  $manager  $netManager;
+
+//string $poseMan=$Getenv+"/maya/"+$MayaVersion+"-"+$hexadecimal+"/scripts/ylovePoseMan.pyc";
+//string $netPoseMan="//mayaprosp/plug-ins/MayaPlugins/Maya2012/Py/ylovePoseMan.pyc";
+//sysFile -copy  $poseMan  $netPoseMan;
+
+
+//string $Frame=$Getenv+"/maya/"+$MayaVersion+"-"+$hexadecimal+"/scripts/FrameLen.pyc";
+//string $netFrame="//mayaprosp/plug-ins/MayaPlugins/Maya2012/Py/FrameLen.pyc";
+//sysFile -copy  $Frame  $netFrame;

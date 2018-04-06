@@ -1,0 +1,157 @@
+//////////////////////////////////////////////////////////////////////
+headsUpDisplay -rp 0 0;
+headsUpDisplay
+-section                0
+-block                  0
+-label                  "Resolution"
+-blockSize              "large"
+-labelFontSize          "large"
+-dataFontSize           "large"
+-command                "Pixal()"
+-attachToRefresh
+useResolution;
+
+global proc string Pixal()
+  {
+    string  $pixal_h =`getAttr   defaultResolution.width`;
+    string  $pixal_W =`getAttr   defaultResolution.height`;
+    string $pixal= $pixal_h +"x"+$pixal_W;
+    return $pixal;
+  }
+//////////////////////////////////////////////////////////////////////
+headsUpDisplay -rp 0 1;
+headsUpDisplay
+-section                0
+-block                  1
+-label                  "Format"
+-blockSize              "large"
+-labelFontSize          "large"
+-dataFontSize           "large"
+-event                  "timeUnitChanged" 
+-command                "timeUnit()"
+useTimeUnit;
+
+global proc string timeUnit()
+{
+  string $pal =`currentUnit -q -t`;
+	return $pal;
+}
+//////////////////////////////////////////////////////////////////////
+headsUpDisplay -rp 4 0;
+headsUpDisplay
+-section                4
+-block                  0
+-label                  "Scenes"
+-blockSize              "large"
+-labelFontSize          "large"
+-dataFontSize           "large"
+-command                "Scenes()"
+-attachToRefresh
+useScenes;
+
+global proc string Scenes()
+{
+string $fileName=`file -q -sn -shn`;
+if($fileName==""){$fileName="文件未命名";}
+else if(!`gmatch $fileName "*sq*sc*f*c*"`){$fileName="文件名不规范";}
+else{$fileName=`file -q -sn -shn`;}
+string $baseName=basenameEx($fileName);
+return $baseName;
+}
+//////////////////////////////////////////////////////////////////////
+headsUpDisplay -rp 6 0;
+headsUpDisplay
+-section                6
+-block                  0
+-label                  "Frame"
+-blockSize              "large" 
+-labelFontSize          "large"
+-dataFontSize           "large"
+-command                "perFrame()"
+-attachToRefresh
+usePerFrame;
+
+global proc string perFrame()
+{
+ int    $curframe=`currentTime -q`;
+ int    $maxframe=`playbackOptions -q -aet`;
+ string  $outframe = ($curframe +"/" + $maxframe);
+      return $outframe;
+}
+//////////////////////////////////////////////////////////////////////
+headsUpDisplay -rp 7 0;
+headsUpDisplay
+-section                7
+-block                  0
+-label                  "Camera"
+-blockSize              "large"
+-labelFontSize          "large"
+-dataFontSize           "large"
+-command                "cameraName()"
+-attachToRefresh
+useCameraName;
+
+global proc string cameraName()
+{
+  string $curPanel = `getPanel -withFocus`;
+  string $camName =  `modelPanel -q -camera $curPanel`;
+  return $camName;
+}
+//////////////////////////////////////////////////////////////////////
+headsUpDisplay -rp 9 1;
+headsUpDisplay
+-section                9
+-block                  1
+-label                  "Producer"
+-blockSize              "large"
+-labelFontSize          "large"
+-dataFontSize           "large"
+-command                "Producer()"
+-attachToRefresh
+useProducer;
+
+global proc string Producer()
+  {
+  string  $filepath = "C:/MYname";
+  string $user;
+  if(`filetest -r $filepath`)
+      {
+  	$fileread=`fopen $filepath "r"`;
+  	string $name = `fgetline $fileread`;
+  	fclose $fileread;
+  	$user=$name;
+        }
+  if($user==""){$user="写上你的名字";}
+  return $user;
+  }
+//////////////////////////////////////////////////////////////////////
+headsUpDisplay -rp 9 0;
+headsUpDisplay
+-section                9
+-block                  0
+-label                  "FocalLength"
+-blockSize              "large"
+-labelFontSize          "large"
+-dataFontSize           "large"
+-command                "camFocalth()"
+-attachToRefresh        
+useFocalLength;
+
+global proc string camFocalth()
+{
+  string $curPanel = `getPanel -withFocus`;
+  string $camname =  `modelPanel -q -camera $curPanel`;
+  string $focal=getAttr($camname+".focalLength"); 
+	return  $focal;
+}
+//////////////////////////////////////////////////////////////////////
+
+string $perspCameras[] = `listCameras -p`;
+for($cama in $perspCameras)
+{
+if((size($perspCameras)==1)) 
+ {setAttr($cama+".displayFilmGate") 1;setAttr($cama+".displaySafeAction") 1;setAttr($cama+".overscan") 1;}
+
+else if((!`getAttr -l ($cama+".renderable")`)&&(!`gmatch $cama "persp"`))
+{setAttr($cama+".displayFilmGate") 1;setAttr($cama+".displaySafeAction") 1;setAttr($cama+".overscan") 1;}
+}

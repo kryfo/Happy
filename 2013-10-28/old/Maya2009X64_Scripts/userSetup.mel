@@ -1,0 +1,2 @@
+source "HappyTool.mel";
+source "//MAYAPROSP/plug-ins/MayaPlugins/Maya2009/userSetup.mel";

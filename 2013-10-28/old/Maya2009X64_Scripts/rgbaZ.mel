@@ -1,0 +1,43 @@
+///////////////////////////////////////////////
+string $selRGBA[]=`ls -sl`;
+if (!`objExists rgbaZshaderSG`)
+{sets -renderable true -noSurfaceShader true -empty -name rgbaZshaderSG;}
+
+if (!`objExists rgbaZshader`)
+{shadingNode -asShader surfaceShader - n rgbaZshader;}
+
+if (!`objExists rgbaZsetRangeUtility`)
+{shadingNode -asUtility setRange -n rgbaZsetRangeUtility;}
+
+if (!`objExists rgbaZsamplerInfoUtility`)
+{shadingNode -asUtility samplerInfo -n rgbaZsamplerInfoUtility;}
+
+if (!`objExists rgbaZmultiplyDivideUtility`)
+{shadingNode -asUtility multiplyDivide -n rgbaZmultiplyDivideUtility;}
+
+if(`isConnected rgbaZshader.outColor rgbaZshaderSG.surfaceShader`==0)
+{
+connectAttr -f rgbaZshader.outColor rgbaZshaderSG.surfaceShader;
+connectAttr -f rgbaZsetRangeUtility.outValueX rgbaZshader.outColorR;
+connectAttr -f rgbaZsetRangeUtility.outValueX rgbaZshader.outColorG;
+connectAttr -f rgbaZsetRangeUtility.outValueX rgbaZshader.outColorB;
+connectAttr -f rgbaZmultiplyDivideUtility.outputX rgbaZsetRangeUtility.valueX;
+connectAttr -f rgbaZsamplerInfoUtility.pointCameraZ rgbaZmultiplyDivideUtility.input1X;
+addAttr -longName "cameraNearClipPlane" -attributeType "float" rgbaZsamplerInfoUtility;
+addAttr -longName "cameraFarClipPlane"  -attributeType "float" rgbaZsamplerInfoUtility;
+connectAttr -f rgbaZsamplerInfoUtility.cameraNearClipPlane rgbaZsetRangeUtility.oldMinX;
+connectAttr -f rgbaZsamplerInfoUtility.cameraFarClipPlane rgbaZsetRangeUtility.oldMaxX;
+setAttr rgbaZsetRangeUtility.minX 1.0; 
+setAttr rgbaZsetRangeUtility.maxX 0.0;
+setAttr "rgbaZmultiplyDivideUtility.input2X" -1;
+}
+if(size($selRGBA)>0)
+{
+select -r $selRGBA;
+sets -e -forceElement rgbaZshaderSG;
+}
+////////////////////////////////////////////////
+
+
+
+

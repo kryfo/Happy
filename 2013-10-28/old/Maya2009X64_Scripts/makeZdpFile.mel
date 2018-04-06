@@ -1,0 +1,17 @@
+string $fileDialog = `file -q -sn`;
+if(`gmatch $fileDialog "*lr*"`)
+{
+;
+}
+else
+{error  "File name is wrong!";}
+
+
+source SetSoftwareRenderSetting;
+source ZdpShader;
+
+string $regularExpr = "lr_.*_f";
+string $saveAsname = `substitute $regularExpr $fileDialog "lr_zdp_f"`;
+file  -rename $saveAsname;
+file -f -save;
+

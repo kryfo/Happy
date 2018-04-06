@@ -1,0 +1,5 @@
+//////////////////////…Ë÷√MentalRay‰÷»æ∆˜
+if (!`pluginInfo -query -loaded "Mayatomr.mll"`)  loadPlugin "Mayatomr.mll";
+miCreateDefaultNodes();
+miCreateOtherOptionsNodesForURG();
+setAttr "defaultRenderGlobals.ren"  -type "string" "mentalRay";

@@ -1,0 +1,20 @@
+if(`window -ex "ChangePath"`) deleteUI -window "ChangePath";
+window -width 600 -title "ChangePath" "ChangePath";
+rowColumnLayout -numberOfColumns 3 -columnWidth 1 60 -columnWidth 2 500 -columnWidth 3 60;
+text -label "PastePath";
+textField "pathField";
+button -label "OpenPath" -c "Op()";
+showWindow "ChangePath";
+
+
+global proc Op()
+{
+string $text=`textField -q -tx "pathField"`;
+	if(`gmatch $text "*/*"`)
+	{
+	 string $result = substituteAllString($text, "/", "\\");
+	 system("load"+$result);
+	}
+else
+	{system("load"+$text);}
+}

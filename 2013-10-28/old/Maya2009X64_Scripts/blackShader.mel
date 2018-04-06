@@ -1,0 +1,35 @@
+
+//////////////////////////////////////////////////////////////////////////
+//生成ZD材质球
+if (!`objExists blackShaderSG`)
+	{sets -renderable true -noSurfaceShader true -empty -name blackShaderSG;}
+if (!`objExists blackShader`)
+	{ string $shader = `shadingNode -asShader surfaceShader - n blackShader`; }
+if(`isConnected blackShader.outColor blackShaderSG.surfaceShader`==0)
+	{
+	 connectAttr -f blackShader.outColor blackShaderSG.surfaceShader;
+	 setAttr "blackShader.outColor" -type double3 0 0 0 ;
+	 setAttr "blackShader.outMatteOpacity" -type double3 0 0 0 ;
+	}
+
+/////选择面赋材质
+string $renderPass[] = `listTransforms "-type mesh"`;
+string $renderObj;
+for($renderObj in $renderPass)
+{
+
+if((!`gmatch $renderObj "*Cache*"`)&&(!`gmatch $renderObj "*Prop*"`))
+	{
+select $renderObj;	
+sets -e -forceElement blackShaderSG;
+	setAttr ($renderObj+".castsShadows")    1;
+	setAttr ($renderObj+".receiveShadows")  0;
+	setAttr ($renderObj+".primaryVisibility") 1;
+	}
+}
+
+select -cl;
+
+/////////////////////////////////////////////////////////////////////////
+
+

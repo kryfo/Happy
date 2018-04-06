@@ -1,0 +1,8 @@
+////////////////////////////////设置文件输出格式
+setAttr -l false "defaultRenderGlobals.outf";
+setAttr "defaultRenderGlobals.outf" 3;
+setAttr "defaultRenderGlobals.animation" 1;
+setAttr "defaultRenderGlobals.putFrameBeforeExt" 1;
+setAttr "defaultRenderGlobals.periodInExt" 1;
+setAttr "defaultRenderGlobals.outFormatControl" 0;
+setAttr "defaultRenderGlobals.extensionPadding" 4;

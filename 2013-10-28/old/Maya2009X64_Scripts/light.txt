@@ -1,0 +1,264 @@
+global proc link(){
+string $allObj[]= `ls -as`;
+for ( $objBuffer in $allObj)
+	{      
+	select -r $objBuffer;
+	lightlink -object $objBuffer -light "defaultLightSet" ;
+	//elationshipEditorMakeRelationship relationshipPanel1 objectCentricLightLinking {"defaultLightSet"};	      
+	}
+}   
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+global proc checkMax(){
+int $j;
+string $link[]=`ls -type lightLinker`;
+int $add;
+int $x;
+int $dfset,$hy,$obj;
+print "===========================================================\n";
+print ("There have "+`size $link`+"  lightLinker\n\n");
+	for ($j=0;$j<`size $link`;$j++)
+	{
+		$dfset=0;
+		$hy=0;
+		$obj=0;
+		$add=10000;
+		$x=$add;
+		
+		while(1)
+		{
+		if(!`isConnected "defaultLightSet.message" ($link[$j]+".link["+$x+"].light")`)
+		{
+			$x-=$add;
+			$add=floor($add*0.5);
+		}
+	
+		$x+=$add;
+	
+		if ($add==0)break;
+		}
+		$dfset=$x;
+		//////////////////////////////////////////////////////////
+		
+		$add=10000;
+		$x=$add;
+		
+		while(1)
+		{					
+		if(!`isConnected "hyperGraphLayout.msg" ($link[$j]+".link["+$x+"].olnk")`)
+		{
+			$x-=$add;
+			$add=floor($add*0.5);
+		}
+	
+		$x+=$add;
+	
+		if ($add==0)break;
+		}
+		$hy=$x;		
+		/////////////////////////////////////////////////////////
+		$add=10000;
+		$x=$add;
+		
+		while(1)
+		{
+		if(!`isConnected "defaultObjectSet.msg" ($link[$j]+".link["+$x+"].olnk")`)
+		{
+			$x-=$add;
+			$add=floor($add*0.5);
+		}
+	
+		$x+=$add;
+	
+		if ($add==0)break;
+		}
+		$obj=$x;
+		print "===========================================================\n";
+		print ("In "+$link[$j]+" have\n"		
+		+"defaultLightSet have"+$dfset+"\n"
+		+"hyperGraphLayout have"+$hy+"\n"
+		+"defaultObjectSet have"+$obj+"\n");
+		
+			
+	}
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////
+global proc int findMax( int $j ){
+
+string $link[]=`ls -type lightLinker`;
+int $add=10000;
+int $x=$add;
+	while(1)
+	{
+	if(!`isConnected "defaultLightSet.message" ($link[$j]+".link["+$x+"].light")`)
+	{
+		$x-=$add;
+		$add=floor($add*0.5);
+	}
+	
+	$x+=$add;
+	
+	if ($add==0)break;
+	}
+return $x;
+}
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+global proc killLightLink_v2(){
+killObjLink();
+int $sum,$hy,$obj,$liset;
+int $amount=0;
+string $link[]=`ls -type lightLinker`;
+int $linkSize=`size $link`;
+
+
+for ($j=0;$j<$linkSize ;$j++ )
+	{
+          
+	int $max=findMax($j);	
+	for ($i=0;$i<=$max;$i++)
+		{
+			$liser=0;
+			$hy=0;
+			$obj=0;
+		 	
+			if(`isConnected "defaultLightSet.message" ($link[$j]+".link["+$i+"].light")`)
+			{
+				string $command="disconnectAttr defaultLightSet.message "+$link[$j]+".link["+$i+"].light";
+				eval ($command);
+				$liset++;
+				$sum++;
+			}	
+			if(`isConnected "hyperGraphLayout.msg" ($link[$j]+".link["+$i+"].olnk")`)
+			{
+				string $command="disconnectAttr hyperGraphLayout.msg "+$link[$j]+".link["+$i+"].olnk";
+				eval ($command);
+				$hy++;
+			}
+			
+			if(`isConnected ":defaultObjectSet.msg" ($link[$j]+".link["+$i+"].olnk")`)
+			{
+				string $command="disconnectAttr defaultObjectSet.msg "+$link[$j]+".link["+$i+"].olnk";
+				eval ($command);
+				$obj++;
+			}			
+			
+			//if($i%100==0)
+			print ("Kill "+($i)+" link "+"in "+$link[$j]+"\n");
+			
+			if($i==$max-1)
+			{
+				print "===========================================================\n";
+				print ("In "+$link[$j]+" have\n"
+					+"defaultLightSet have "+$liset+" \n"
+					+"hyperGraphLayout have "+$hy+" \n"
+					+"defaultObjectSet have "+$obj+" \n");
+			}
+		}
+
+	}
+//if(`checkBox -q -value linkInfo`)	      
+//link;
+
+print ("Kill "+$sum+" Light link\n");
+}
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+global proc relink(){
+	
+
+string $shade[]=`ls -type shadingEngine`;
+
+string $link[]=`ls -type lightLinker`;
+//for ($j=0;$j<`size $link`;$j++)
+	//{
+     for ($i=0;$i<`size $shade`;$i++)
+      {
+		  string $command_o="connectAttr -f "+$shade[$i]+".message  lightLinker1.link["+$i+"].olnk";
+		   
+		   string $command_l="connectAttr -f defaultLightSet.message lightLinker1.link["+$i+"].light";
+
+       eval ($command_o);
+       eval ($command_l);
+
+      }
+//}
+
+
+	
+	
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+global proc killObjLink()
+{
+
+string $link[]=`ls -type lightLinker`;
+int $linkSize=`size $link`;
+
+int $killed =0;
+for ($j=0;$j<$linkSize ;$j++ )
+{
+          
+	int $max=findMax($j);	
+	 print $max;
+   for ($i=0;$i<=$max;$i++)
+   {
+   	
+		 	
+      string $shade[]=`ls -type shadingEngine`;
+
+      for ($k=0;$k<`size $shade`;$k++)
+      {
+      	
+			if(`isConnected  ($shade[$k]+".msg ") ($link[$j]+".link["+$i+"].olnk")`)
+			{
+				
+				string $command="disconnectAttr "+$shade[$k]+".msg "+$link[$j]+".link["+$i+"].olnk";
+				eval ($command);
+        $killed++;
+        print ("object link killed:"+$killed+"\n");
+}			
+}
+}
+}
+}
+
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+global proc lightLinkTool(){
+	
+
+if((`window -ex linkTool`) == true) deleteUI linkTool;
+string $window = `window -title "lightLinkTool"   linkTool`;
+
+columnLayout -adjustableColumn true;
+	separator  -st none -h 2;
+ // checkBox -label " Relink "   -v 0 -align "left" linkInfo;
+
+	separator  -st none -h 5;
+	string $b1=`button -label "How many lightlinks?" -w 100 -command "checkMax()"`;
+  //string $b3=`button -label "kill all ObjLinks" -w 100 -command "killObjLink()"`;	
+  string $b2=`button -label "Kill all lightlinks" -w 100 -command "killLightLink_v2()"`;	
+  string $b4=`button -label "relink" -w 100 -command "relink()"`;	
+  string $b5=`button -label "close window" -command ("deleteUI -window " + $window)`;
+
+setParent ..;
+window -edit -widthHeight 150 120 linkTool;
+showWindow $window;
+}
+
+lightLinkTool
+;

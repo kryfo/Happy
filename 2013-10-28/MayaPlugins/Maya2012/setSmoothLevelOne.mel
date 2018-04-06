@@ -1,0 +1,6 @@
+string $Smoothes[]=`lsType("polySmoothFace")`;
+for($Ss in $Smoothes)
+{
+if($Ss!="<done>")
+setAttr ($Ss+".divisions") 1;
+}

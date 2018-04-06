@@ -1,0 +1,10 @@
+select -cl;
+select -add "*polySmoothFace*";
+string $Smooths[]=`ls -sl`;
+for($sms in $Smooths)
+{
+  //setAttr ($sms+".divisions") 1;
+if(`isConnected  CharBodySmooth.CharBodySmooth ($sms+".divisions")`==0)
+   {connectAttr -f CharBodySmooth.CharBodySmooth ($sms+".divisions");}
+}
+

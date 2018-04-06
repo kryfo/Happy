@@ -1,0 +1,57 @@
+/////////////////////////设置文件输出层名
+/*
+string $fileshot=`file -q -sn -shn`;
+global string $Gpro;
+global string $Gepisode;
+global string $Gparagraph;
+global string $Gscene;
+global string $Glayer;
+global string $Gframe;
+global string $Geye;
+////////////////////////////////////////////////////////
+string $pro =`match "^[a-z]+" $fileshot`;
+$Gpro=$pro;
+////////////////////////////////////////////////////////
+string $episode=  `match ("e[0-9]+"+"[a-z]+") $fileshot`;
+if ($episode==""){string $episode=`match ("e[0-9]+") $fileshot`;$Gepisode=$episode;}
+else{$Gepisode=$episode;}
+////////////////////////////////////////////////////////
+string $paragraph=`match ("p[0-9]+") $fileshot`;
+if ($paragraph==""){string $paragraph=`match ("s[0-9]+") $fileshot`;$Gparagraph=$paragraph;}
+else{$Gparagraph=$paragraph;}
+////////////////////////////////////////////////////////
+string $scene=`match ("s[0-9]+"+"[a-z]+") $fileshot`;
+if ($scene==""){string $scene=`match ("s[0-9]+") $fileshot`;$Gscene=$scene;}
+else{$Gscene=$scene;}
+/////////////////////////////////////////////////
+string $layer=`match "\\([a-z]+_[a-z]+\\)" $fileshot`;
+$Glayer=$layer;
+////////////////////////////////////////////////////////
+string $frame=`match "\\([0-9]+\\)" $fileshot`;
+$Gframe=$frame;
+/////////////////////////////////////////////////
+string $tmpEyeName=`match "_[l-r]_" $fileshot`;
+string $eye=`match "[l-r]" $tmpEyeName`;
+$Geye=$eye;
+////////////////////////////////////////////////////////
+if(($Gpro!="")&&($Gepisode!="")&&($Gparagraph!="")&&($Gscene!="")&&($Glayer!="")&&($Gframe!="")&&(($Geye!="")))
+{
+setAttr -l false "defaultRenderGlobals.ifp";
+setAttr -type "string" "defaultRenderGlobals.ifp"  ($Gpro+"_"+$Gepisode+"_"+$Gparagraph+"_"+$Gscene+"_"+$Glayer+"_"+$Gframe+"_"+$Geye);
+}
+if(($Gpro!="")&&($Gepisode!="")&&($Gparagraph!="")&&($Gscene!="")&&($Glayer!="")&&($Gframe!="")&&(($Geye=="")))
+{
+setAttr -l false "defaultRenderGlobals.ifp";
+setAttr -type "string" "defaultRenderGlobals.ifp"  ($Gpro+"_"+$Gepisode+"_"+$Gparagraph+"_"+$Gscene+"_"+$Glayer+"_"+$Gframe);
+}
+else
+{
+setAttr -l false "defaultRenderGlobals.ifp";
+setAttr -type "string" "defaultRenderGlobals.ifp"  ($Gpro);
+}
+//////////////////////////////////////////////////////////
+*/
+
+setAttr -l false "defaultRenderGlobals.ifp";
+setAttr -type "string" "defaultRenderGlobals.ifp"  "<Scene>";
+

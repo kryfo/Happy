@@ -1,0 +1,15 @@
+SaveSceneAs;
+
+string $filename=`file -q -sn -shn`;
+if(!`gmatch $filename "*lr_col_f*_c*"`)
+{
+error "Your scenes name is wrong!";
+}
+
+else
+{
+source SetMentalrayRenderSetting;
+source blackShader;
+}
+
+

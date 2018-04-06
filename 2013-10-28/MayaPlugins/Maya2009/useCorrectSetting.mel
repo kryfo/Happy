@@ -1,0 +1,3 @@
+///////////////////修改其它渲染层带来的负作用
+if (`objExists "motionBlurPass"`)   delete motionBlurPass;
+setAttr "miDefaultOptions.motionBlur" 0;

@@ -1,0 +1,110 @@
+global string $gMainWindow;
+menu  -p $gMainWindow  -label "ddd" -to 1 -aob 1;
+menuItem -subMenu 1 -tearOff 1 -label "General";
+	menuItem -label "UpdateMel" -command  "source update.mel" ;
+	menuItem -label "FileTexture" -command  "FileTextureManager";
+	menuItem -label "CamShow"               -command  "source cameraShow.mel" ;
+	menuItem -label "CamHide"                -command  "source cameraHide.mel" ;
+	setParent -menu ..;
+menuItem -subMenu 1 -tearOff 1 -label "Modeling";
+	menuItem -label "ExpObj"  -command      "source ExpObj.mel";
+	menuItem -label "ImpObj"  -command      "source ImpObjandMb.mel";
+	menuItem -divider true;	
+	menuItem -label "DelLink"  -command      "source DeleteLightLink.mel";
+	menuItem -divider true;	
+	menuItem -label "ReName"  -command      "source ReName.mel";
+
+ 	setParent -menu ..;
+
+menuItem -subMenu 1 -tearOff 1 -label "Animation";
+	menuItem -label "AniSetting"               -command  "source useAnimationSetting.mel" ;
+	menuItem -label "CamShow"               -command  "source cameraShow.mel" ;
+	menuItem -label "CamHide"                -command  "source cameraHide.mel" ;
+	menuItem -label "PlayAvi"                   -command  "source Playblast.mel";
+	menuItem -divider true;	
+	menuItem -label "ExpCam" -command      "source exportCamera.mel";
+	menuItem -label "CamMir" -command      "source importCamMirror.mel";
+	menuItem -divider true;	
+	menuItem -label "PoseMAN_Friend" -command  "source PoseMAN.mel";
+	menuItem -label "PoseMAN_Share" -command  "source PoseMAN1.mel";
+                  menuItem -label "PoseMAN2011" -c "source PoseMan2011.mel";
+
+	menuItem -divider true;	
+	menuItem -label "FindFile_XFtown"     -command  "source FindFileTwo.mel";
+      	menuItem -label "FindFile_WI"     -command  "source FindFileWI.mel";
+
+      	menuItem -label "FindFile_ROKE"     -command  "source FindFileRoke.mel";
+      	menuItem -label "FindFile_JH"     -command  "source FindFileJH.mel";
+	menuItem -label "ChangeCatch"  -command  "source animationCatch.mel";
+	menuItem -divider true;	
+
+//	menuItem -label "makeCacheFile" -command  "source makeCacheFile.mel";
+
+	setParent -menu ..;
+
+menuItem -subMenu 1 -tearOff 1 -label "Rendering";
+	menuItem -subMenu 1 -tearOff 1 -label "RenderSetting";
+		menuItem -label "MrSetting"  -command  "source SetMentalrayRenderSetting.mel";
+		menuItem -label "SwSetting"  -command  "source SetSoftwareRenderSetting.mel";
+		menuItem -label "ScenesSetting"  -command  "source loadSetting.mel";
+		menuItem -label "FilmSetting"  -command  "source filmSetting.mel";
+		menuItem -label "RenderShow"  -command  "source renderShow.mel";
+		menuItem -label "Charlight"  -command  "source importCharLiht.mel";
+		setParent -menu ..;
+
+	menuItem -divider true;	
+	menuItem -subMenu 1 -tearOff 1 -label "DirCharLight";
+	menuItem -label "LeftLight"       -command "source CharLight_left.mel   ";
+	menuItem -label "RightLight"      -command "source CharLight_right.mel  ";
+	menuItem -label "BLeftLight"      -command "source CharLight_Bleft.mel  ";
+	menuItem -label "BRightLight"     -command "source CharLight_Brihgt.mel ";
+	menuItem -divider true;	
+
+		
+		setParent -menu ..;		
+	menuItem -subMenu 1 -tearOff 1 -label "RenderLayer";
+		menuItem -label "COLFile"        -command "source  makeColFile.mel";
+		menuItem -label "LGTFile"        -command "source  makeLgtFile.mel";
+		menuItem -label "SHDFile"        -command "source  makeShdFile.mel";       
+		menuItem -label "RIMFile"        -command "source  makeRimFile.mel";
+		menuItem -label "RGBFile"        -command "source  makeRGBFile.mel";
+		menuItem -label "OCCFile"        -command "source  makeOccFile.mel";
+		menuItem -label "NMFile"         -command "source  makeNMFile.mel";
+		menuItem -label "ZDPFile"        -command "source  makeZdpFile.mel";
+		menuItem -label "MRZDPFile"        -command "source  makeMRZdpFile.mel";
+		menuItem -label "sunShadowLight"        -command "source  ytpp_sunShadowLight.mel";
+		menuItem -label "PPsetRGB"        -command "source  PPsetRGB.mel";
+//	menuItem -divider true;	
+//		menuItem -label "OCCFileII"      -command "source  makeOccFileII.mel";
+//		menuItem -label "NMFileII"       -command "source  makeNMFileII.mel";
+
+//	menuItem -divider true;	
+
+//		menuItem -label "bathOcc"        -command "source  makeAllOccFile.mel";
+//		menuItem -label "bathZdp"        -command "source  makeAllZdpFile.mel";
+
+
+		setParent -menu ..;
+	menuItem -divider true;	
+		menuItem -label "MSFile"  -command  "source moRigtoMs.mel";
+		menuItem -label "SmoothI"            -command "source  CharSmoothI.mel";
+		menuItem -label "SmoothII"            -command "source  CharSmoothII.mel";
+		menuItem -label "SetFileFilter"     -command "source  setFileFilter.mel";
+		menuItem -label "MatteShader"       -command "source  MatteShader.mel";
+	menuItem -divider true;	
+		menuItem -label "ScreenRender"       -command "source  ScreenRender.mel";	
+		menuItem -label "YloveRender"       -command "source  ScreenRenderII.mel";
+
+
+//	menuItem -divider true;	
+//	menuItem -label "Autolight"  -command  "source AutoMainLihgt.mel";
+//	menuItem -label "Backlight"  -command  "source BackLight.mel";
+		setParent -menu ..;
+
+
+
+
+
+
+
+

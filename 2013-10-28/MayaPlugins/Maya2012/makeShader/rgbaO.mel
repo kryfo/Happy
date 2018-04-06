@@ -1,0 +1,32 @@
+///////////////////////////////////////////////
+string $selRGBA[]=`ls -sl`;
+if (!`objExists rgbaOshaderSG`)
+{sets -renderable true -noSurfaceShader true -empty -name rgbaOshaderSG;}
+
+if (!`objExists rgbaOshader`)
+{ string $shader = `shadingNode -asShader surfaceShader - n rgbaOshader`; }
+
+if (!`objExists rgbaOtexture`)
+{ string $texture = `shadingNode -asTexture  mib_amb_occlusion -n rgbaOtexture`; }
+
+
+if(`isConnected rgbaOshader.outColor rgbaOshaderSG.surfaceShader`==0)
+{
+connectAttr -f rgbaOshader.outColor rgbaOshaderSG.surfaceShader;
+connectAttr -f rgbaOtexture.outValue rgbaOshader.outColor;
+
+setAttr "rgbaOtexture.samples" 128;
+setAttr "rgbaOtexture.spread" 0.8;
+setAttr "rgbaOtexture.max_distance" 20;
+}
+
+if(size($selRGBA)>0)
+{
+select -r $selRGBA;
+sets -e -forceElement rgbaOshaderSG;
+}
+////////////////////////////////////////////////
+
+
+
+

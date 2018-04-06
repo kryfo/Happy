@@ -1,0 +1,142 @@
+string $fileDialog = `file -q -sn`;
+if(`gmatch $fileDialog "*lr*"`)
+{
+;
+}
+else
+{error  "File name is wrong!";}
+
+
+source SetMentalrayRenderSetting;
+setAttr "defaultResolution.width" 512;
+setAttr "defaultResolution.height" 288;
+
+/*
+string $references[]=`file -q -r`;
+for($perRef in $references)
+{
+ file -importReference $perRef;
+
+}
+                
+string $deleteM[] = `lsThroughFilter DefaultShadingGroupsAndMaterialsFilter`;
+		if (size($deleteM) > 0)
+		{
+			for ($item in $deleteM)
+			{
+				delete $item;
+			}
+		}
+
+string $deleteT[] = `lsThroughFilter DefaultTexturesFilter`;
+	if (size($deleteT) > 0)
+		{
+			for ($item in $deleteT)
+			{
+				delete $item;
+			}
+		}
+
+string $lightm[]=`ls -lights`;
+if (size($lightm) > 0)
+		{
+			for ($item in $lightm)
+			{
+				delete $item;
+			}
+		}
+*/
+
+
+
+string $lightm[]=`ls -lights`;
+if (size($lightm) > 0)
+		{
+			for ($item in $lightm)
+			{
+				setAttr ($item+".v") 0;
+			}
+		}
+
+select -cl;
+
+select  -r "*:*coneShape*";
+string $hide[]=`ls -sl`;
+if (size($hide) > 0)
+		{
+			for ($h in $hide)
+			{
+				setAttr ($h+".v") 0;
+			}
+		}
+
+select -cl;
+
+if(`objExists ("*"+":"+"*eyepupilla*")`)
+{select -add  ("*"+":"+"*eyepupilla*");}
+
+if(`objExists ("*"+":"+"*eyelash*")`)
+{select -add   ("*"+":"+"*eyelash*");}
+
+if(`objExists ("*"+":"+"*eyebrow*")`)
+{select -add  ("*"+":"+"*eyebrow*");}
+
+if(`objExists ("*"+":"+"*eyeglass*")`)
+{select -add  ("*"+":"+"*eyeglass*");}
+
+string $NMobjes[]=`ls -type "transform" -sl`;
+
+int $hi;
+for($hi=0; $hi<size($NMobjes);$hi++)
+{
+setAttr ($NMobjes[$hi]+".miDeriveFromMaya") 0;
+setAttr ($NMobjes[$hi]+".miHide") 1;
+}
+select -cl;
+//////////////////////////////////////////////////////////////////////////
+//生成ZD材质球
+if (!`objExists NMshaderSG`)
+{sets -renderable true -noSurfaceShader true -empty -name NMshaderSG;}
+
+if (!`objExists NMshader`)
+{ string $shader = `shadingNode -asShader surfaceShader - n NMshader`; }
+
+if (!`objExists NMtexture`)
+{ string $texture = `shadingNode -asTexture  mib_amb_occlusion -n NMtexture`; }
+
+
+if(`isConnected NMshader.outColor NMshaderSG.surfaceShader`==0)
+{
+connectAttr -f NMshader.outColor NMshaderSG.surfaceShader;
+connectAttr -f NMtexture.outValue NMshader.outColor;
+
+setAttr "NMtexture.samples" 128;
+setAttr "NMtexture.output_mode" 3;
+setAttr "NMtexture.spread" 1;
+setAttr "NMtexture.max_distance" 25;
+}
+select -cl;
+/////选择面赋材质
+string $renderPass[] = `listTransforms "-type mesh"`;
+select $renderPass;
+sets -e -forceElement NMshaderSG;
+select -cl;
+
+//隐藏流体渲染属性
+string $fluidshapes[] =`ls -type "fluidShape"`;
+for($fluidone in $fluidshapes)
+{
+setAttr ($fluidone + ".primaryVisibility") 0;
+}
+
+
+
+/////////////////////////////////////////////////////////////////////////
+
+
+
+
+string $regularExpr = "lr_.*_f";
+string $saveAsname = `substitute $regularExpr $fileDialog "lr_nm_f"`;
+file  -rename $saveAsname;
+file -f -save;

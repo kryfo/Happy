@@ -1,0 +1,85 @@
+string $fileDialog = `file -q -sn`;
+if(`gmatch $fileDialog "*lr*"`)
+{
+;
+}
+else
+{error  "File name is wrong!";}
+
+
+
+source SetMentalrayRenderSetting;
+
+string $lightm[]=`ls -lights`;
+if (size($lightm) > 0)
+{
+for ($item in $lightm)
+{setAttr ($item+".v") 0;}
+}
+/////////////////////////////////////////////////////////////////////////
+
+
+select -cl;
+
+if(`objExists ("*"+":"+"*coneShape*")`)
+{
+select -r ("*"+":"+"*coneShape*");
+string $hide[]=`ls -sl`;
+if (size($hide) > 0)
+		{
+			for ($h in $hide)
+			{
+				setAttr ($h+".v") 0;
+			}
+		}
+}
+select -cl;
+
+//隐藏流体渲染属性
+string $fluidshapes[] =`ls -type "fluidShape"`;
+for($fluidone in $fluidshapes)
+{
+setAttr ($fluidone + ".primaryVisibility") 0;
+}
+select -cl;
+
+
+
+
+/////////////////////////////////////////////////////////////////////////
+//生成Lambert材质球
+if (!`objExists WhiteShaderSG`)
+{sets -renderable true -noSurfaceShader true -empty -name WhiteShaderSG;}
+
+if (!`objExists WhiteShader`)
+{ string $shader = `shadingNode -asShader lambert - n WhiteShader`; }
+
+if(`isConnected WhiteShader.outColor WhiteShaderSG.surfaceShader`==0)
+{
+connectAttr -f WhiteShader.outColor WhiteShaderSG.surfaceShader;
+setAttr "WhiteShader.color" -type double3 1 1 1 ;
+}
+/////选择面赋材质
+string $renderPass[] = `listTransforms "-type mesh"`;
+string $renderObj;
+for($renderObj in $renderPass)
+{
+select $renderObj;
+sets -e -forceElement WhiteShaderSG;
+}
+select -cl;
+
+if(!`objExists sunShadowLight`)
+{
+directionalLight -i 0 -rs 1 -rotation -90 0 0 -n "sunShadowLight";
+setAttr "sunShadowLightShape.shadowColor" -type double3 1 1 1 ;
+setAttr "sunShadowLightShape.lightAngle" 2;
+setAttr "sunShadowLightShape.shadowRays" 10;
+}
+else{setAttr "sunShadowLightShape.visibility" 1;}
+
+select -cl;
+string $regularExpr = "lr_.*_f";
+string $saveAsname = `substitute $regularExpr $fileDialog "lr_lgt_f"`;
+file  -rename $saveAsname;
+file -f -save;

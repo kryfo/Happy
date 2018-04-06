@@ -1,0 +1,120 @@
+string $path="Y:/JianHang/scenes";
+string $series[]=`getFileList -folder  ($path+"/")   -filespec "*series*"`;
+
+if(`window -ex "GetMayaFile"`) deleteUI -window "GetMayaFile";
+window  "GetMayaFile";
+tabLayout "series";
+for($item in $series)
+{
+tabLayout -p "series" $item;
+string $Getsort[]=`getFileList -folder  ($path+"/"+$item+"/")`;
+	for($sort in $Getsort)
+	{if(`filetest -d ($path+"/"+$item+"/"+$sort+"/")`)
+	   {scrollLayout -p $item $sort;
+		gridLayout -numberOfColumns 3 -cellWidthHeight 320 (240+20);
+		string $GetmayaPath[]=`getFileList -folder ($path+"/"+$item+"/"+$sort+"/")`;
+			for($maya in $GetmayaPath)
+			{if(`filetest -d ($path+"/"+$item+"/"+$sort+"/"+$maya+"/")`)
+			 {
+			 string $GetRigMaya[]=`getFileList -folder  ($path+"/"+$item+"/"+$sort+"/"+$maya+"/") -filespec "*_rig_*.mb"`;
+			 string $GetRigBmp[]=`getFileList -folder  ($path+"/"+$item+"/"+$sort+"/"+$maya+"/") -filespec "*_rig_*.bmp"`;
+
+			 string $GetMoMaya[]=`getFileList -folder  ($path+"/"+$item+"/"+$sort+"/"+$maya+"/") -filespec "*_mo_*.mb"`;
+			 string $GetMoBmp[]=`getFileList -folder  ($path+"/"+$item+"/"+$sort+"/"+$maya+"/") -filespec "*_mo_*.bmp"`;
+
+			 string $GetMsMaya[]=`getFileList -folder  ($path+"/"+$item+"/"+$sort+"/"+$maya+"/") -filespec "*_ms_*.mb"`;
+			 string $GetMsBmp[]=`getFileList -folder  ($path+"/"+$item+"/"+$sort+"/"+$maya+"/") -filespec "*_ms_*.bmp"`;
+
+			 string $mayafile;
+			 string $bmpfile;
+			 string $mayaMsFile;
+
+			if(size($GetRigMaya))
+			{$mayafile=$GetRigMaya[0];}
+			else if(size($GetMoMaya))
+			{$mayafile=$GetMoMaya[0];}
+			else if(size($GetMsMaya))
+			{$mayafile=$GetMsMaya[0];}
+			else{$mayafile="NoMayaFile";}
+
+			if(size($GetRigBmp))
+			{$bmpfile=$GetRigBmp[0];}
+			else if(size($GetMoBmp))
+			{$bmpfile=$GetMoBmp[0];}
+			else if(size($GetMsBmp))
+			{$bmpfile=$GetMsBmp[0];}
+			else{$bmpfile="NoBmpFile";}
+
+
+			if(`gmatch   $mayafile "*_rig_*"`)
+			{$mayaMsFile = `substitute "_rig_" $mayafile "_ms_"`;}
+			else if(`gmatch   $mayafile "*_mo_*"`)
+			{$mayaMsFile = `substitute "_mo_" $mayafile "_ms_"`;}
+			else if(`gmatch   $mayafile "*_ms_*"`)
+			{$mayaMsFile = `substitute "_ms_" $mayafile "_ms_"`;}
+			else{$mayaMsFile="NoBmpFile";}			
+
+			string $bmp=$path+"/"+$item+"/"+$sort+"/"+$maya+"/"+$bmpfile;
+			if(!`filetest -f $bmp`){$bmp="NoBmpFile.bmp";}
+			
+			iconTextButton    -style "iconAndTextVertical"  -image $bmp -label $mayafile    -c ("OpenPath (\"  "+$path+"/"+$item+"/"+$sort+"/"+$maya+"  \")");
+			if(`filetest -f ($path+"/"+$item+"/"+$sort+"/"+$maya+"/"+$mayafile)`)
+			  {popupMenu;
+			menuItem -l "ReferFile"  -c ("ReferFile (\"  "+$path+"/"+$item+"/"+$sort+"/"+$maya+"/"+$mayafile+"  \")");
+			menuItem -l "ImportFile" -c ("ImportFile(\"  "+$path+"/"+$item+"/"+$sort+"/"+$maya+"/"+$mayafile+"  \")");
+			menuItem -l "OpenFile"   -c ("OpenFile  (\"  "+$path+"/"+$item+"/"+$sort+"/"+$maya+"/"+$mayafile+"  \")");
+			menuItem -l "OpenMsFile"   -c ("OpenMsFile  (\"  "+$path+"/"+$item+"/"+$sort+"/"+$maya+"/"+$mayaMsFile+"  \")");
+			  }
+			}
+		      }
+	   }
+       }
+}
+showWindow "GetMayaFile";
+/////////////////////////////////
+global proc ImportFile(string $filename)
+{
+  file -import $filename;
+}
+////////////////////////////
+global proc ReferFile(string $filename)
+{
+string $ns=basenameEx($filename);
+file -r -type "mayaBinary" -gl -loadReferenceDepth "all" -namespace $ns -options "v=0;" $filename;
+
+}
+///////////////////////////////
+global proc OpenFile(string $filename)
+{
+string $Dialog=`confirmDialog -title "SaveFile" -message "do you want to save the scenes?" -messageAlign "center"
+	-button "Save"          -button "Don't Save"  -button "Cancel"
+	-defaultButton "Save"   -cancelButton "Don't Save"  -dismissString "Cancel"`;
+if($Dialog=="Save")
+	{if(""!=`file -q -sn`){file -f -save;}
+	else{SaveSceneAs;}
+	file -f -open  $filename;
+	}
+else if($Dialog=="Don't Save")
+	{file -f -open  $filename;}
+else{}
+};
+///////////////////////////////
+global proc OpenMsFile(string $filename)
+{
+string $Dialog=`confirmDialog -title "SaveFile" -message "do you want to save the scenes?" -messageAlign "center"
+	-button "Save"          -button "Don't Save"  -button "Cancel"
+	-defaultButton "Save"   -cancelButton "Don't Save"  -dismissString "Cancel"`;
+if($Dialog=="Save")
+	{if(""!=`file -q -sn`){file -f -save;}
+	else{SaveSceneAs;}
+	if($filename!="NoMayaFile"){file -f -open  $filename;}
+	}
+else if($Dialog=="Don't Save")
+	{
+	if($filename!="NoMayaFile"){file -f -open  $filename;}
+	}
+};
+//////////////////////////////////////
+global proc OpenPath(string $filePath)
+{system("load" +$filePath);}
+////////////////////////////////////

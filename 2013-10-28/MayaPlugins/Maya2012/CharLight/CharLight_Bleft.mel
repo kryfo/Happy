@@ -1,0 +1,17 @@
+/////////////////////////
+string $mayaFilePath="//MAYAPROSP/plug-ins/MayaPlugins/Maya2009/CharLight/";
+if(`objExists "CharLight_Bleft"`) 
+{delete CharLight_Bleft;}
+string $charlight=$mayaFilePath+"CharLight_Bleft.mb";
+file -import $charlight;
+string $perspCameras[] = `listCameras -p`;
+for($rendercam in $perspCameras)
+{
+if((!`getAttr -l ($rendercam+".renderable")`)&&(!`gmatch $rendercam "persp"`))
+	{
+	if($rendercam!="")
+	 orientConstraint -offset 0  0  0  -weight 1 $rendercam CharLight_Bleft;
+	 orientConstraint -offset 0  0  0  -weight 0 $rendercam CharLight_Bleft;
+	} 
+}
+/////////////////////////

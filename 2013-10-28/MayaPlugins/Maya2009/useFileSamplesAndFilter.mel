@@ -1,0 +1,11 @@
+////////////////////////设置渲染图片质量及过滤
+setAttr "miDefaultOptions.minSamples" 0;
+setAttr "miDefaultOptions.maxSamples" 2;
+
+setAttr -l false "miDefaultOptions.filter";
+setAttr "miDefaultOptions.filter" 1;
+setAttr "miDefaultOptions.filterWidth" 1.1;
+setAttr "miDefaultOptions.filterHeight" 1.1;
+
+setAttr "miDefaultOptions.jitter" 0;
+setAttr "miDefaultOptions.sampleLock" 1;

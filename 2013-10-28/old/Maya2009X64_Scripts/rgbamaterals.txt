@@ -1,0 +1,65 @@
+///////////////////////////////////////////////
+if (!`objExists rgbaAshaderSG`)
+	{sets -renderable true -noSurfaceShader true -empty -name rgbaAshaderSG;}
+if (!`objExists rgbaAshader`)
+	{ string $shader = `shadingNode -asShader surfaceShader - n rgbaAshader`; }
+if(`isConnected rgbaAshader.outColor rgbaAshaderSG.surfaceShader`==0)
+	{connectAttr -f rgbaAshader.outColor rgbaAshaderSG.surfaceShader;}
+sets -e -forceElement rgbaAshaderSG;
+
+////////////////////////////////////////////////
+
+if (!`objExists rgbaRshaderSG`)
+	{sets -renderable true -noSurfaceShader true -empty -name rgbaRshaderSG;}
+if (!`objExists rgbaRshader`)
+	{ string $shader = `shadingNode -asShader surfaceShader - n rgbaRshader`; }
+if(`isConnected rgbaRshader.outColor rgbaRshaderSG.surfaceShader`==0)
+	{connectAttr -f rgbaRshader.outColor rgbaRshaderSG.surfaceShader;
+	 setAttr "rgbaRshader.outColor" -type double3 1 0 0 ;
+	 setAttr "rgbaRshader.outMatteOpacity" -type double3 0 0 0 ;
+	}
+sets -e -forceElement rgbaRshaderSG;
+
+//////////////////////////////////////////////
+
+if (!`objExists rgbaGshaderSG`)
+	{sets -renderable true -noSurfaceShader true -empty -name rgbaGshaderSG;}
+if (!`objExists rgbaGshader`)
+	{ string $shader = `shadingNode -asShader surfaceShader - n rgbaGshader`; }
+if(`isConnected rgbaGshader.outColor rgbaGshaderSG.surfaceShader`==0)
+	{connectAttr -f rgbaGshader.outColor rgbaGshaderSG.surfaceShader;
+	 setAttr "rgbaGshader.outColor" -type double3 0 1 0 ;
+	 setAttr "rgbaGshader.outMatteOpacity" -type double3 0 0 0 ;
+	}
+sets -e -forceElement rgbaGshaderSG;
+
+//////////////////////////////////////////////
+
+if (!`objExists rgbaBshaderSG`)
+	{sets -renderable true -noSurfaceShader true -empty -name rgbaBshaderSG;}
+if (!`objExists rgbaBshader`)
+	{ string $shader = `shadingNode -asShader surfaceShader - n rgbaBshader`; }
+if(`isConnected rgbaBshader.outColor rgbaBshaderSG.surfaceShader`==0)
+	{connectAttr -f rgbaBshader.outColor rgbaBshaderSG.surfaceShader;
+	 setAttr "rgbaBshader.outColor" -type double3 0 0 1 ;
+	 setAttr "rgbaBshader.outMatteOpacity" -type double3 0 0 0 ;
+	}
+sets -e -forceElement rgbaBshaderSG;
+
+//////////////////////////////////////////////
+
+
+if (!`objExists rgbaMshaderSG`)
+	{sets -renderable true -noSurfaceShader true -empty -name rgbaMshaderSG;}
+if (!`objExists rgbaMshader`)
+	{ string $shader = `shadingNode -asShader surfaceShader - n rgbaMshader`; }
+if(`isConnected rgbaMshader.outColor rgbaMshaderSG.surfaceShader`==0)
+	{connectAttr -f rgbaMshader.outColor rgbaMshaderSG.surfaceShader;
+	 setAttr "rgbaMshader.outColor" -type double3 0 0 0 ;
+	 setAttr "rgbaMshader.outMatteOpacity" -type double3 0 0 0 ;
+	}
+sets -e -forceElement rgbaMshaderSG;
+
+//////////////////////////////////////////////
+
+

@@ -1,0 +1,11 @@
+
+string $referFiles[] = `file -q -r`;
+for($referFile in $referFiles)
+{
+string $refNode=`file -q -referenceNode $referFile`; 
+string $substituteName = "setup.*";
+string $referNewFile = `substitute $substituteName $referFile "setup_occ_001.mb"`;
+
+file -loadReference $refNode $referNewFile;
+
+}

@@ -1,0 +1,60 @@
+/*
+global proc Rename(string $NewName)
+{
+$NewName=`textField -q -text NewName`;
+string $rename[]=`ls -sl`;
+int $i;
+for($i=0;$i<size($rename);$i++)
+{
+rename $rename[$i] $NewName;
+}
+}
+
+if(`window -ex "Rename"`) deleteUI -window "Rename";
+window "Rename";
+columnLayout -columnAttach "both" 1  -columnWidth 300 ;
+text -l "NewName";
+string $Field=`textField  NewName`;
+$NewName=`textField -q -text NewName`;
+button -l "OK" -c "Rename($NewName)";
+showWindow "Rename";
+*/
+
+
+
+///////////////////////////////////////////////
+global proc Rename(string $NewName)
+{
+$NewName=`textField -q -text NewName`;
+string $rename[]=`ls -sl`;
+int $i;
+for($i=0;$i<size($rename);$i++)
+   {
+     if(`gmatch $NewName "*_"`)
+	{
+string $pername=$NewName+$rename[$i];
+rename $rename[$i] $pername;
+	}
+     else if(`gmatch $NewName "_*"`)
+	{
+string $pername=$rename[$i]+$NewName;
+rename $rename[$i] $pername;
+	}
+else   
+	{
+string $pername=$NewName;
+rename $rename[$i] $pername;
+	}
+
+   }
+}
+
+if(`window -ex "Rename"`) deleteUI -window "Rename";
+window "Rename";
+columnLayout -columnAttach "both" 1  -columnWidth 300 ;
+text -l "NewName";
+string $Field=`textField  NewName`;
+$NewName=`textField -q -text NewName`;
+text -l "*_ for front,_* for back, * for rename";
+button -l "OK" -c "Rename($NewName)";
+showWindow "Rename";

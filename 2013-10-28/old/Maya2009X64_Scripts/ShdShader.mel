@@ -1,0 +1,79 @@
+
+string $lightm[]=`ls -lights`;
+if (size($lightm) > 0)
+		{
+			for ($item in $lightm)
+			{
+				setAttr ($item+".v") 0;
+			}
+setAttr "KeylightShape.visibility" 1;
+setAttr "KeylightShape.lightAngle" 0;
+setAttr "KeylightShape.shadowRays" 1;
+
+		}
+
+select -cl;
+
+if(`objExists ("*"+":"+"*coneShape*")`)
+{
+select -r ("*"+":"+"*coneShape*");
+string $hide[]=`ls -sl`;
+if (size($hide) > 0)
+		{
+			for ($h in $hide)
+			{
+				setAttr ($h+".v") 0;
+			}
+		}
+}
+select -cl;
+
+//隐藏流体渲染属性
+string $fluidshapes[] =`ls -type "fluidShape"`;
+for($fluidone in $fluidshapes)
+{
+setAttr ($fluidone + ".primaryVisibility") 0;
+}
+select -cl;
+
+//////////////////////////////////////////////////////////////////////////
+//生成SHD材质球
+if (!`objExists SHDshaderSG`)
+	{sets -renderable true -noSurfaceShader true -empty -name SHDshaderSG;}
+if (!`objExists rgbaSshader`)
+	{ string $shader = `shadingNode -asShader useBackground - n SHDshader`; }
+if(`isConnected SHDshader.outColor SHDshaderSG.surfaceShader`==0)
+	{
+	 connectAttr -f SHDshader.outColor SHDshaderSG.surfaceShader;
+	 setAttr "SHDshader.specularColor" -type double3 0 0 0 ;
+	 setAttr "SHDshader.reflectivity" 0;
+	 setAttr "SHDshader.reflectionLimit" 0;
+	}
+
+/////选择面赋材质
+string $renderPass[] = `listTransforms "-type mesh"`;
+string $renderObj;
+for($renderObj in $renderPass)
+{
+select $renderObj;	
+sets -e -forceElement SHDshaderSG;
+
+if(`gmatch $renderObj "*Cache*"`)
+	{
+	setAttr ($renderObj+".primaryVisibility") 0;
+	setAttr ($renderObj+".castsShadows")    1;
+
+	}
+else
+	{
+	setAttr ($renderObj+".castsShadows")    0;
+	setAttr ($renderObj+".receiveShadows")  1;
+	setAttr ($renderObj+".primaryVisibility") 1;
+	}
+}
+
+select -cl;
+
+/////////////////////////////////////////////////////////////////////////
+
+

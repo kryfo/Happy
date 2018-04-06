@@ -1,0 +1,20 @@
+currentUnit -t film -updateAnimation 1;
+//设置渲染帧长
+string $fileName =`file -q -sn`;
+if(!($fileName==""))
+{
+//起始帧
+string $endStringStratName =endString($fileName,12);
+string $stratFrameName = basename($fileName ,$endStringStratName);
+string $startFrame =endString($stratFrameName, 3);
+setAttr "defaultRenderGlobals.startFrame" $startFrame;
+//结束帧
+string $endStringEndName =endString($fileName,8);
+string $endFrameName = basename($fileName ,$endStringEndName);
+string $endFrame =endString($endFrameName, 3);
+setAttr "defaultRenderGlobals.endFrame" $endFrame;
+
+//设置首尾帧
+playbackOptions -e -min $startFrame -max $endFrame;
+playbackOptions -e -ast $startFrame -aet $endFrame;
+}

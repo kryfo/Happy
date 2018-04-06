@@ -1,0 +1,10 @@
+if( !`objExists CharLight` ) 
+{
+  string $charlight="//192.168.0.188/plug-ins/Maya2009X64_Scripts/CharLight.mb";
+  file -import $charlight;
+}
+else
+{
+  warning("Scenes already have CharLight");
+}
+

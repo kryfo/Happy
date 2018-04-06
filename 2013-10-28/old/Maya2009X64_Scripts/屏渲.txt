@@ -1,0 +1,8 @@
+int $sf=`getAttr "defaultRenderGlobals.startFrame"`;
+int $ef=`getAttr "defaultRenderGlobals.endFrame"`;
+int $i;
+for($i=$sf;$i<=$ef;$i++)
+{
+renderWindowRender redoPreviousRender renderView;
+currentTime $i;
+}

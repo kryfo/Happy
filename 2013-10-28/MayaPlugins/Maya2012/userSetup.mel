@@ -1,0 +1,76 @@
+global string $gMainWindow;
+menu  -p $gMainWindow  -label "MayaNewPro" -to 1 -aob 1;
+menuItem -subMenu 1 -tearOff 1 -label "General";
+
+	menuItem -label  "FindFiles"                       -command  "source  useFindFiles.mel" ;
+	menuItem -label "useManager"                -command  "source useManager.mel" ;
+	menuItem -label "useFileName"                -command  "source useFileName.mel" ;
+	menuItem -label "useMrSetting"               -command  "source useMrSetting.mel" ;
+
+
+	setParent -menu ..;
+menuItem -divider true;
+menuItem -subMenu 1 -tearOff 1 -label "CommonTool";
+	menuItem -label "updateMel"                -command  "source update.mel" ;
+	menuItem -label "DelLink"                         -command      "source DeleteLightLink.mel";
+	menuItem -label "FindTexture"                 -command     "source FileTextureManager.mel" ;
+	menuItem -label "GetPath"                        -command    "source ChangePath.mel" ;
+	menuItem -label "FrameLenth"                        -command    "source frameLenth.mel" ;
+	menuItem -divider true;
+	setParent -menu ..;
+menuItem -divider true;
+menuItem -subMenu 1 -tearOff 1 -label "Animation";
+
+	menuItem -label "AniSetting"                -command  "source useAnimationSetting.mel" ;
+	menuItem -label "CamShow"                -command  "source cameraShow.mel" ;
+	menuItem -label "CamHide"                 -command  "source cameraHide.mel" ;
+	menuItem -label "PlayAvi"                    -command  "source Playblast.mel";
+	menuItem -divider true;
+	menuItem -label "YPoseMan"                -command  "source usePoseMAN.mel" ;
+	menuItem -label "YChangeCatch"         -command  "source useAnimationCatch.mel";
+
+
+	setParent -menu ..;
+menuItem -divider true;
+menuItem -subMenu 1 -tearOff 1 -label "Rendering";
+
+	menuItem -subMenu 1 -tearOff 1 -label "RenderLight";
+	menuItem -label "aLeftLight"           -command  "source CharLight_Aleft.mel" ;
+	menuItem -label "aRightLight"           -command  "source CharLight_Aright.mel" ;
+	menuItem -label "bLeftLight"           -command  "source CharLight_Bleft.mel" ;
+	menuItem -label "bRightLight"           -command  "source CharLight_Bright.mel" ;
+	menuItem -label "EggPlanLight"           -command  "source CharLight_egg_plan.mel" ;
+
+
+	setParent -menu ..;
+	menuItem -divider true;
+	menuItem -subMenu 1 -tearOff 1 -label "RenderLayer";
+	menuItem -label "makeOCCFile"                 -command  "source useFileToOCC.mel" ;
+	menuItem -label "makeNRMFile"                -command  "source useFileToNRM.mel" ;
+	menuItem -label "makeMZDFile"                -command  "source useFileToMRZDP.mel" ;
+	menuItem -label "makeSHDFile"                 -command  "source useFileToSHD.mel" ;
+	menuItem -label "makeRGBFile"                 -command  "source useFileToRGB.mel" ;
+	menuItem -label "makeLGTFile"                 -command  "source useFileToLGT.mel" ;
+	menuItem -label "makeMOBFile"                -command  "source useFileToMOB.mel" ;
+	menuItem -label "makeRIMFile"                 -command  "source useFileToRIM.mel" ;
+
+
+	setParent -menu ..;
+	menuItem -divider true;
+	menuItem -subMenu 1 -tearOff 1 -label "RenderTool";
+	menuItem -label "MSFile"                  	 -command  "source useMoRigtoMs.mel";
+	menuItem -label "SmoothI"              	  -command "source  CharSmoothOne.mel";
+	menuItem -label "SmoothII"            	  -command "source  CharSmoothTWO.mel";
+	menuItem -label "SetFileFilter"          	  -command "source  setFileFilter.mel";
+	menuItem -label "MatteShader"        	  -command "source  MatteShader.mel";
+
+
+
+	setParent -menu ..;
+	menuItem -divider true;
+	menuItem -subMenu 1 -tearOff 1 -label "SubmitRender";
+	menuItem -label "ScreenRender"       	-command "source  ScreenRender.mel";	
+	menuItem -label "DeadLineRender"          -command  "source DeadLineRender.mel" ;
+	menuItem -label "SingeDeadLine"             -command  "source DeadLineRenerSinge.mel" ;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

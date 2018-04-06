@@ -1,0 +1,201 @@
+//////////////////////判断名字是否正确
+string $checkFileName=`file -q -sn -shn`;
+string $nameString=("[a-z]*"+"_"+"[a-z]*"+"("+"[a-z]*_[a-z][a-z][a-z]"+")"+"_"+"e*"+"_"+"p*"+"_"+"s*"+"("+"[0-9]*[0-9]"+")"+"_"+"v*[0-9]"+".mb");
+if(!`gmatch $checkFileName  $nameString`){error "File Name is  nonstandard";}
+/////////////////////修改文件名
+string $checkFileName=`file -q -sn`;
+string $tmpLayerName=`match "\\([a-z]+_[a-z]+\\)" $checkFileName`;
+string $layerName=`match "[a-z]+_[a-z]+" $tmpLayerName`;
+string $layerRep=endString($layerName,3);
+string $saveAsname = `substitute $layerRep $checkFileName "rgb"`;
+file  -rename $saveAsname;
+//////////////////////设置MentalRay渲染器
+if (!`pluginInfo -query -loaded "Mayatomr.mll"`)  loadPlugin "Mayatomr.mll";
+miCreateDefaultNodes();
+miCreateOtherOptionsNodesForURG();
+setAttr "defaultRenderGlobals.ren"  -type "string" "mentalRay";
+//////////////////////////////////////////设置PAL帧率
+currentUnit -t pal -updateAnimation 1;
+/////////////////////////设置输出规范
+string $checkFileName=`file -q -sn -shn`;
+string $SceneName=`match "e[0-9].*_p[0-9].*_s[0-9].*\\([0-9]+\\)"   $checkFileName`;
+string $tmpLayerName=`match "\\([a-z]+_[a-z]+\\)" $checkFileName`;
+string $layerName=`match "[a-z]+_[a-z]+" $tmpLayerName`;
+if(($SceneName!="")||($layerName!=""))
+{
+setAttr -l false "defaultRenderGlobals.ifp";
+setAttr -type "string" "defaultRenderGlobals.ifp"  ($SceneName+"."+$layerName);
+}
+else
+{
+setAttr -l false "defaultRenderGlobals.ifp";
+setAttr -type "string" "defaultRenderGlobals.ifp"  "<Scene>";
+}
+/////////////////////
+setAttr -l false "defaultRenderGlobals.outf";
+setAttr "defaultRenderGlobals.outf" 3;
+
+setAttr "defaultRenderGlobals.animation" 1;
+setAttr "defaultRenderGlobals.putFrameBeforeExt" 1;
+setAttr "defaultRenderGlobals.periodInExt" 1;
+setAttr "defaultRenderGlobals.outFormatControl" 0;
+setAttr "defaultRenderGlobals.extensionPadding" 4;
+
+setAttr "defaultRenderGlobals.multiCamNamingMode" 1;
+//设置首尾帧
+string $checkFileName=`file -q -sn -shn`;
+string $tempFileGiveFrame=`match "\\([0-9]+\\)" $checkFileName`;
+string $FileGiveFrame=`match "[0-9]+" $tempFileGiveFrame`;
+if(($FileGiveFrame!="")&&(int($FileGiveFrame)>100))
+{
+setAttr "defaultRenderGlobals.startFrame" 100;
+setAttr "defaultRenderGlobals.endFrame" $FileGiveFrame;
+playbackOptions -e -min 100 -max $FileGiveFrame;
+playbackOptions -e -ast 100 -aet $FileGiveFrame;
+}
+else
+{
+setAttr "defaultRenderGlobals.startFrame" 100;
+setAttr "defaultRenderGlobals.endFrame" 100;
+playbackOptions -e -min 100 -max 101;
+playbackOptions -e -ast 100 -aet 101;
+}
+
+setAttr -l false "defaultRenderGlobals.modifyExtension";
+setAttr "defaultRenderGlobals.modifyExtension" 0;
+//setAttr "defaultRenderGlobals.startExtension" 100;
+//setAttr "defaultRenderGlobals.byExtension" 1;
+
+setAttr "defaultResolution.aspectLock" 0;
+setAttr -l false "defaultResolution.w";
+setAttr -l false "defaultResolution.h";
+setAttr "defaultResolution.w" 1024;
+setAttr "defaultResolution.h" 576;
+
+setAttr -l false "defaultResolution.dar";
+setAttr  "defaultResolution.dar" 1.777;
+
+setAttr -l false "defaultResolution.pa";
+setAttr "defaultResolution.pa" 1;
+
+setAttr -l false "defaultRenderGlobals.enableDefaultLight";
+setAttr "defaultRenderGlobals.enableDefaultLight" 0;
+
+/////////////////////////////////MR
+setAttr "mentalrayGlobals.renderThreads" 8;
+
+setAttr "miDefaultOptions.scanline" 1;
+setAttr "mentalrayGlobals.renderMode" 0;
+
+setAttr -l false "miDefaultOptions.rayTracing";
+setAttr "miDefaultOptions.rayTracing" 1;
+setAttr "miDefaultOptions.maxReflectionRays" 0;
+setAttr "miDefaultOptions.maxRefractionRays" 0;
+setAttr "miDefaultOptions.maxRayDepth" 1;
+setAttr "miDefaultOptions.maxShadowRayDepth" 1;
+
+setAttr -l false "miDefaultOptions.globalIllum";
+setAttr "miDefaultOptions.globalIllum" 0;
+
+setAttr -l false "miDefaultOptions.caustics";
+setAttr "miDefaultOptions.caustics" 0;
+
+setAttr -l false "miDefaultOptions.finalGather";
+setAttr  "miDefaultOptions.finalGather" 0;
+
+setAttr "miDefaultOptions.minSamples" 0;
+setAttr "miDefaultOptions.maxSamples" 2;
+
+setAttr -l false "miDefaultOptions.filter";
+setAttr "miDefaultOptions.filter" 1;
+setAttr "miDefaultOptions.filterWidth" 1.1;
+setAttr "miDefaultOptions.filterHeight" 1.1;
+
+setAttr "miDefaultOptions.jitter" 0;
+setAttr "miDefaultOptions.sampleLock" 1;
+///////////////////修改其它渲染层带来的负作用
+setAttr "defaultResolution.pa" 1;
+if (`objExists "motionBlurPass"`)   delete motionBlurPass;
+setAttr "miDefaultOptions.motionBlur" 0;
+//////////////////////////////////////////设置渲染相机
+if((!`getAttr -l "perspShape.renderable"`))
+{setAttr "perspShape.renderable" 0;}
+if((!`getAttr -l "topShape.renderable"`))
+{setAttr "topShape.renderable" 0;}
+if((!`getAttr -l "frontShape.renderable"`))
+{setAttr "frontShape.renderable" 0;}
+if((!`getAttr -l "sideShape.renderable"`))
+{setAttr "sideShape.renderable" 0;}
+string $perspCameras[] = `listCameras -p`;
+	for($rendercam in $perspCameras)
+		{
+	if((!`getAttr -l ($rendercam+".renderable")`)&&(!`gmatch $rendercam "persp"`))
+			{ setAttr  ($rendercam+".renderable") 1;} 
+		}
+/////////////////////////////////////////////////////////////////////
+//////////////////////////////////MatterShader材质球及赋材质
+if (!`objExists MatterShaderSG`)
+{sets -renderable true -noSurfaceShader true -empty -name MatterShaderSG;}
+
+if (!`objExists MatterShader`)
+{ string $shader = `shadingNode -asShader surfaceShader - n MatterShader`; }
+
+if(`isConnected MatterShader.outColor MatterShaderSG.surfaceShader`==0)
+{
+connectAttr -f MatterShader.outColor MatterShaderSG.surfaceShader;
+setAttr "MatterShader.color" -type double3 0 0 0 ;
+}
+/////选择面赋材质
+string $renderPass[] = `listTransforms "-type surfaceShape"`;
+for($renderObj in $renderPass)
+{
+select $renderObj;
+	//int $maxf[]=`polyEvaluate -face $renderObj`;
+	//int $maxx=$maxf[0];
+	//select $renderObj.f[0:$maxx];	
+sets -e -forceElement MatterShaderSG;
+select -cl;
+}
+////////////////////////显示线框
+string $currentModelPanel=`getPanel -withFocus`;
+modelEditor -edit -wireframeOnShaded 1 $currentModelPanel;
+/////////////////////////////////////////////
+///////////////隐藏灯光
+string $lights[]=`ls -lights`;
+for ($item in $lights)	{setAttr ($item+".v") 0;}
+
+///////////////隐藏流体渲染属性
+string $fluidshapes[] =`ls -type "fluidShape"`;
+for($fluidone in $fluidshapes)
+{
+setAttr ($fluidone + ".visibility") 0;
+select -cl;
+}
+
+/////////////////隐藏体积材质渲染属性
+string $volumeFog[] =`ls -type "volumeFog"`;
+for($item in $volumeFog)
+{
+ string $itemFog[]=`hyperShade -objects $item`;
+ string $Fog[]=`ls -sl`;
+	if(size($Fog)>0)
+	{
+  	 for($fogOne in $Fog)
+	 {setAttr ($fogOne + ".visibility") 0;select -cl;}
+	}
+}
+/////////////////隐藏体积灯光渲染属性
+string $lightFog[] =`ls -type "lightFog"`;
+for($item in $lightFog)
+{
+ string $itemFog[]=`hyperShade -objects $item`;
+ string $Fog[]=`ls -sl`;
+	if(size($Fog)>0)
+	{
+  	 for($fogOne in $Fog)
+	 {setAttr ($fogOne + ".visibility") 0;select -cl;}
+	}
+}
+/////////////////////////////////////
+
+file -f -save;

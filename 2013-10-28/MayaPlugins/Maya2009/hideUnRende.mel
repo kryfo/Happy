@@ -1,0 +1,65 @@
+///////////////隐藏灯光
+string $lights[]=`ls -lights`;
+for ($item in $lights) {setAttr ($item+".v") 0;}
+
+///////////////隐藏流体渲染属性
+string $fluidshapes[] =`ls -type "fluidShape"`;
+for($fluidone in $fluidshapes)
+{
+setAttr ($fluidone + ".visibility") 0;
+select -cl;
+}
+
+/////////////////隐藏体积材质渲染属性
+string $volumeFog[] =`ls -type "volumeFog"`;
+for($item in $volumeFog)
+{
+ string $itemFog[]=`hyperShade -objects $item`;
+ string $Fog[]=`ls -sl`;
+	if(size($Fog)>0)
+	{
+  	 for($fogOne in $Fog)
+	 {setAttr ($fogOne + ".visibility") 0;select -cl;}
+	}
+}
+/////////////////隐藏体积灯光渲染属性
+string $lightFog[] =`ls -type "lightFog"`;
+for($item in $lightFog)
+{
+ string $itemFog[]=`hyperShade -objects $item`;
+ string $Fog[]=`ls -sl`;
+	if(size($Fog)>0)
+	{
+  	 for($fogOne in $Fog)
+	 {setAttr ($fogOne+".visibility") 0;select -cl;}
+	}
+}
+////////////////////////////设置物体属性MR不渲染
+//eyelash眼睫毛//eyebrow眉毛//eyepupil瞳孔//eyeglass眼镜//hideMrRender//如有新的加这个字节
+
+if(`objExists ("*"+":"+"*eyepupil*")`)
+{select -add  ("*"+":"+"*eyepupil*");}
+
+if(`objExists ("*"+":"+"*eyelash*")`)
+{select -add   ("*"+":"+"*eyelash*");}
+
+if(`objExists ("*"+":"+"*eyebrow*")`)
+{select -add  ("*"+":"+"*eyebrow*");}
+
+if(`objExists ("*"+":"+"*eyeglass*")`)
+{select -add  ("*"+":"+"*eyeglass*");}
+
+if(`objExists ("*"+":"+"*hideMrRender*")`)
+{select -add  ("*"+":"+"*hideMrRender*");}
+
+string $occobjes[]=`ls -type "transform" -sl`;
+
+int $hi;
+for($hi=0; $hi<size($occobjes);$hi++)
+{
+setAttr ($occobjes[$hi]+".miDeriveFromMaya") 0;
+setAttr ($occobjes[$hi]+".miHide") 1;
+}
+select -cl;
+///////////////////////////////////////////
+

@@ -1,0 +1,41 @@
+
+string $selcams[]=`ls -sl`;
+
+
+				{
+				string $lightm[]=`ls -lights`;
+				if (size($lightm) > 0)
+				{for ($item in $lightm)
+				{
+				setAttr ($item+".v") 0;
+				}
+				}
+
+				string $fluidshapes[] =`ls -type "fluidShape"`;
+				for($fluidone in $fluidshapes)
+				{
+				setAttr ($fluidone + ".primaryVisibility") 0;
+				}
+
+				}
+
+
+
+int $i =size($selcams);
+if($i==1)
+{ 
+if( !`objExists CharLight_right` ) 
+	{
+  string $charlight="//192.168.0.188/plug-ins/Maya2009X64_Scripts/CharLight_right.mb";
+  file -import $charlight;
+	}
+orientConstraint -offset 0  0  0  -weight 1 $selcams[0] CharLight_right;
+orientConstraint -offset 0  0  0  -weight 0 $selcams[0] CharLight_right;
+source SetMentalrayLightSetting.mel;
+select $selcams[0];
+}
+
+else
+    {select -cl;
+error "You must select only one camera!";	
+    }

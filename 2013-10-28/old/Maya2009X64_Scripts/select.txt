@@ -1,0 +1,18 @@
+string $selectNode[]=`ls -type surfaceShape`;
+string $renderPass[] = `listTransforms "-type surfaceShape"`;
+
+
+///////////////////////////////
+//选择显示层的物体
+select -cl;
+string $DisLayers[]=`ls -type displayLayer`;
+for($disL in $DisLayers)
+{
+if((getAttr($disL+".visibility")==1)&&($disL!="defaultLayer"))
+    {
+     string $Membs[]=`editDisplayLayerMembers -q $disL`;
+     select -add $Membs;
+    }
+}
+///////////////////////////////////
+

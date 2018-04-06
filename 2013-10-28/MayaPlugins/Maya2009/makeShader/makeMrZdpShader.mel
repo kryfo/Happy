@@ -1,0 +1,34 @@
+//////////////////////////////////MRzdp²ÄÖÊÇò¼°¸³²ÄÖÊ
+if (!`objExists MRZDPshaderSG`)
+{sets -renderable true -noSurfaceShader true -empty -name MRZDPshaderSG;}
+
+if (!`objExists MRZDPshader`)
+{shadingNode -asShader surfaceShader - n MRZDPshader;}
+
+if (!`objExists MRZDPsetRangeUtility`)
+{shadingNode -asUtility setRange -n MRZDPsetRangeUtility;}
+
+if (!`objExists MRZDPsamplerInfoUtility`)
+{shadingNode -asUtility samplerInfo -n MRZDPsamplerInfoUtility;}
+
+if (!`objExists MRZDPmultiplyDivideUtility`)
+{shadingNode -asUtility multiplyDivide -n MRZDPmultiplyDivideUtility;}
+
+if(`isConnected MRZDPshader.outColor MRZDPshaderSG.surfaceShader`==0)
+{
+connectAttr -f MRZDPshader.outColor MRZDPshaderSG.surfaceShader;
+connectAttr -f MRZDPsetRangeUtility.outValueX MRZDPshader.outColorR;
+connectAttr -f MRZDPsetRangeUtility.outValueX MRZDPshader.outColorG;
+connectAttr -f MRZDPsetRangeUtility.outValueX MRZDPshader.outColorB;
+connectAttr -f MRZDPmultiplyDivideUtility.outputX MRZDPsetRangeUtility.valueX;
+connectAttr -f MRZDPsamplerInfoUtility.pointCameraZ MRZDPmultiplyDivideUtility.input1X;
+//addAttr -longName "cameraNearClipPlane" -attributeType "float" samplerInfoUtility;
+//addAttr -longName "cameraFarClipPlane"  -attributeType "float" samplerInfoUtility;
+//connectAttr -f samplerInfoUtility.cameraNearClipPlane setRangeUtility.oldMinX;
+//connectAttr -f samplerInfoUtility.cameraFarClipPlane setRangeUtility.oldMaxX;
+setAttr MRZDPsetRangeUtility.minX 1.0; 
+setAttr MRZDPsetRangeUtility.maxX 0.0;
+setAttr "MRZDPmultiplyDivideUtility.input2X" -1;
+setAttr "MRZDPsetRangeUtility.oldMinX" 50;
+setAttr "MRZDPsetRangeUtility.oldMaxX" 500;
+}

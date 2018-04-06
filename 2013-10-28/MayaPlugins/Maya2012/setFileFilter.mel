@@ -1,0 +1,43 @@
+global proc setOFF()
+{
+string $FilterTypeTex[] = `ls -type "file"`;
+	if (size($FilterTypeTex) > 0)
+		{
+			for ($item in $FilterTypeTex)
+			{
+				setAttr ($item+".filterType") 0;
+			}
+		}
+}
+
+////////////////////////////////
+global proc setChange()
+{
+string $FilterTypeTex[] = `ls -type "file"`;
+	if (size($FilterTypeTex) > 0)
+		{	
+
+			for ($item in $FilterTypeTex)
+			{	
+				int $filtertype=`getAttr ($item+".filterType")`;
+				if($filtertype<5)
+				{setAttr ($item+".filterType") ($filtertype+1);}
+				else{setAttr ($item+".filterType") 0;}
+			}
+		}
+}
+/////////////////////////
+
+if(`window -ex "FileFilter"`) deleteUI -window "FileFilter";
+
+window "FileFilter";
+columnLayout -adjustableColumn true;
+       button -label "setOFF" -c "setOFF()";
+       button -label "setChange" -c  "setChange()";
+setParent ..;
+showWindow "FileFilter";
+
+
+
+
+

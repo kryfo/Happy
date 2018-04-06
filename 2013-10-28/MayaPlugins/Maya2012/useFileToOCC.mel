@@ -1,0 +1,39 @@
+//////////////////////判断名字是否正确
+source "useAffirmFileName.mel";
+/////////////////////修改文件名
+string $checkFileName=`file -q -sn`;
+string $tmpLayerName=`match "\\([a-z]+_[a-z]+\\)" $checkFileName`;
+string $layerName=`match "[a-z]+_[a-z]+" $tmpLayerName`;
+string $layerRep=endString($layerName,3);
+string $saveAsname = `substitute $layerRep $checkFileName "occ"`;
+file  -rename $saveAsname;
+//////////////////////设置MentalRay渲染器
+source "useMentalRayRender.mel";
+//////////////////////////////////////////设置PAL帧率
+source "useCurrentUnit.mel";
+////////////////////////////////设置文件输出层名
+source "useLayerName.mel";
+////////////////////////////////设置文件输出格式
+source "useFileFormatTIF.mel";
+////////////////////////////////设置首尾帧
+source "useRenderFrame.mel";
+////////////////////////////////设置分辨率
+source "useResolutionRatio.mel";
+/////////////////////////////////MR优化
+source "useMrOptimize.mel";
+////////////////////////设置渲染图片质量及过滤
+source "useFileSamplesAndFilter.mel";
+///////////////////修改其它渲染层带来的负作用
+source "useCorrectSetting.mel";
+//////////////////////////////////////////设置渲染相机
+source "useCameraSetting.mel";
+//////////////////////////////////OCC材质球及赋材质
+source "makeOccShader.mel";
+//////////////////////////选择面赋材质
+source "assignOccShader.mel";
+////////////////////////显示线框
+source "useShowWireFrame.mel";
+///////////////隐藏不渲染的物体
+source "hideUnRende.mel";
+///////////////////////////////////保存文件
+source "useSaveFile.mel";

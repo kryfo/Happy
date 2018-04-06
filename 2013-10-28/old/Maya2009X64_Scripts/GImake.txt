@@ -1,0 +1,22 @@
+string $LightList[]=`ls -sl`;
+for($light in $LightList)
+{
+connectAttr up.intensity ($light+".intensity");
+connectAttr up.color ($light+".color");
+connectAttr up.emitDiffuse ($light+".emitDiffuse");
+connectAttr up.emitSpecular ($light+".emitSpecular");
+connectAttr up.useDepthMapShadows ($light+".useDepthMapShadows");
+connectAttr up.dmapResolution ($light+".dmapResolution");
+connectAttr up.useMidDistDmap ($light+".useMidDistDmap");
+connectAttr up.useDmapAutoFocus ($light+".useDmapAutoFocus");
+connectAttr up.useRayTraceShadows ($light+".useRayTraceShadows");
+connectAttr up.dmapFilterSize ($light+".dmapFilterSize");
+connectAttr up.dmapBias ($light+".dmapBias");
+connectAttr up.shadowColor ($light+".shadowColor");
+connectAttr up.shadowRays ($light+".shadowRays");
+connectAttr up.lightAngle ($light+".lightAngle");
+connectAttr up.shadowMap ($light+".shadowMap");
+connectAttr up.smapResolution ($light+".smapResolution");
+connectAttr up.smapSamples ($light+".smapSamples");
+connectAttr up.smapSoftness ($light+".smapSoftness");
+};

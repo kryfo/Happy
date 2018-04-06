@@ -1,0 +1,16 @@
+string $fileDialog = `file -q -sn`;
+if(`gmatch $fileDialog "*lr*"`)
+{
+;
+}
+else
+{error  "File name is wrong!";}
+
+
+source SetMentalrayRenderSetting;
+source WhiteShader;
+
+string $regularExpr = "lr_.*_f";
+string $saveAsname = `substitute $regularExpr $fileDialog "lr_lgt_f"`;
+file  -rename $saveAsname;
+file -f -save;

@@ -1,0 +1,19 @@
+setAttr "defaultResolution.aspectLock" 0;
+setAttr -l false "defaultResolution.w";
+setAttr -l false "defaultResolution.h";
+setAttr "defaultResolution.w" 1024;
+setAttr "defaultResolution.h" 576;
+
+setAttr -l false "defaultResolution.dar";
+setAttr  "defaultResolution.dar" 1.777;
+
+setAttr -l false "defaultResolution.pa";
+setAttr "defaultResolution.pa" 1;
+
+
+string $file=`file -q -sn -shn`;
+if(`gmatch  $file "*occ*"`)
+{
+setAttr "defaultResolution.w" 512;
+setAttr "defaultResolution.h" 288;
+}

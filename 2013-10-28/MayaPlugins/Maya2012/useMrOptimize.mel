@@ -1,0 +1,24 @@
+/////////////////////////////////MR”≈ªØ
+setAttr -l false "defaultRenderGlobals.enableDefaultLight";
+setAttr "defaultRenderGlobals.enableDefaultLight" 0;
+
+setAttr "mentalrayGlobals.renderThreads" 8;
+
+setAttr "miDefaultOptions.scanline" 1;
+setAttr "mentalrayGlobals.renderMode" 0;
+
+setAttr -l false "miDefaultOptions.rayTracing";
+setAttr "miDefaultOptions.rayTracing" 1;
+setAttr "miDefaultOptions.maxReflectionRays" 0;
+setAttr "miDefaultOptions.maxRefractionRays" 0;
+setAttr "miDefaultOptions.maxRayDepth" 1;
+setAttr "miDefaultOptions.maxShadowRayDepth" 1;
+
+setAttr -l false "miDefaultOptions.globalIllum";
+setAttr "miDefaultOptions.globalIllum" 0;
+
+setAttr -l false "miDefaultOptions.caustics";
+setAttr "miDefaultOptions.caustics" 0;
+
+setAttr -l false "miDefaultOptions.finalGather";
+setAttr  "miDefaultOptions.finalGather" 0;

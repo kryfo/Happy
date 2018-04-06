@@ -1,0 +1,2 @@
+setAttr -l false "miDefaultOptions.finalGather";
+setAttr  "miDefaultOptions.finalGather" 1;

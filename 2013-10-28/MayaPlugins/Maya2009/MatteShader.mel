@@ -1,0 +1,18 @@
+if(`window -ex MatteShader`){deleteUI -window MatteShader;}
+
+window -title "MatteShader" MatteShader;
+
+gridLayout -numberOfRowsColumns 2 6 -cellWidthHeight 50 50;
+
+iconTextButton  -image "rgbaMshader.bmp" -style "iconAndTextVertical" -label "MatteM" -command ("source rgbaM.mel");
+iconTextButton  -image "rgbaRshader.bmp" -style "iconAndTextVertical" -label "MatteR" -command ("source rgbaR.mel");
+iconTextButton  -image "rgbaGshader.bmp" -style "iconAndTextVertical" -label "MatteG" -command ("source rgbaG.mel");
+iconTextButton  -image "rgbaBshader.bmp" -style "iconAndTextVertical" -label "MatteB" -command ("source rgbaB.mel");
+iconTextButton  -image "rgbaAshader.bmp" -style "iconAndTextVertical" -label "MatteA" -command ("source rgbaA.mel");
+iconTextButton  -image "rgbaSshader.bmp" -style "iconAndTextVertical" -label "MatteS" -command ("source rgbaS.mel");
+
+iconTextButton  -image "rgbaOshader.bmp" -style "iconAndTextVertical" -label "MatteO" -command ("source rgbaO.mel");
+iconTextButton  -image "rgbaZshader.bmp" -style "iconAndTextVertical" -label "MatteZ" -command ("source rgbaZ.mel");
+iconTextButton  -image "rgbaFshader.bmp" -style "iconAndTextVertical" -label "MatteF" -command ("source rgbaF.mel");
+
+showWindow MatteShader;

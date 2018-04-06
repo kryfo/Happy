@@ -1,0 +1,128 @@
+
+
+
+
+
+string $lightm[]=`ls -lights`;
+if (size($lightm) > 0)
+{
+			for ($item in $lightm)
+			{
+				setAttr ($item+".v") 0;
+			}
+
+
+
+if (`objExists KeylightShape`)
+	{
+setAttr "KeylightShape.visibility" 1;
+setAttr "KeylightShape.color" -type double3 1 0 0 ;
+setAttr "KeylightShape.intensity" 1;
+	}
+
+if (`objExists BacklightShape`)
+	{
+setAttr "BacklightShape.visibility" 1;
+setAttr "BacklightShape.color" -type double3 0 0 1 ;
+setAttr "BacklightShape.intensity" 1;
+	}
+
+if (`objExists KeyFilllightShape`)
+	{
+setAttr "KeyFilllightShape.visibility" 1;
+setAttr "KeyFilllightShape.color" -type double3 0 1 0 ;
+	}
+
+if (`objExists BackFilllightShape`)
+	{
+setAttr "BackFilllightShape.visibility" 1;
+setAttr "BackFilllightShape.color" -type double3 0 1 0 ;
+	}
+
+
+}
+/////////////////////////////////////////////////////////////////////////
+
+
+select -cl;
+
+if(`objExists ("*"+":"+"*coneShape*")`)
+{
+select -r ("*"+":"+"*coneShape*");
+string $hide[]=`ls -sl`;
+if (size($hide) > 0)
+		{
+			for ($h in $hide)
+			{
+				setAttr ($h+".v") 0;
+			}
+		}
+}
+select -cl;
+
+//隐藏流体渲染属性
+string $fluidshapes[] =`ls -type "fluidShape"`;
+for($fluidone in $fluidshapes)
+{
+setAttr ($fluidone + ".primaryVisibility") 0;
+}
+select -cl;
+
+
+
+
+/////////////////////////////////////////////////////////////////////////
+//生成Lambert材质球
+if (!`objExists WhiteShaderSG`)
+{sets -renderable true -noSurfaceShader true -empty -name WhiteShaderSG;}
+
+if (!`objExists WhiteShader`)
+{ string $shader = `shadingNode -asShader lambert - n WhiteShader`; }
+
+if(`isConnected WhiteShader.outColor WhiteShaderSG.surfaceShader`==0)
+{
+connectAttr -f WhiteShader.outColor WhiteShaderSG.surfaceShader;
+setAttr "WhiteShader.color" -type double3 1 1 1 ;
+}
+/////选择面赋材质
+string $renderPass[] = `listTransforms "-type mesh"`;
+string $renderObj;
+for($renderObj in $renderPass)
+{
+if((`gmatch $renderObj "*Cache*"`)||(`gmatch $renderObj "*Prop*"`))
+	{
+select $renderObj;
+sets -e -forceElement WhiteShaderSG;
+	setAttr ($renderObj+".primaryVisibility") 1;
+	}
+else
+	{ 
+	setAttr ($renderObj+".castsShadows")    1;
+	setAttr ($renderObj+".receiveShadows")  0;
+	setAttr ($renderObj+".primaryVisibility") 0; 
+	}
+
+}
+select -cl;
+
+if(`objExists ("*"+":"+"*eyepupilla*")`)
+{select -add  ("*"+":"+"*eyepupilla*");}
+
+if(`objExists ("*"+":"+"*eyelash*")`)
+{select -add   ("*"+":"+"*eyelash*");}
+
+if(`objExists ("*"+":"+"*eyebrow*")`)
+{select -add  ("*"+":"+"*eyebrow*");}
+
+if(`objExists ("*"+":"+"*eyeglass*")`)
+{select -add  ("*"+":"+"*eyeglass*");}
+
+string $occobjes[]=`ls -type "transform" -sl`;
+
+int $hi;
+for($hi=0; $hi<size($occobjes);$hi++)
+{
+setAttr ($occobjes[$hi]+".miDeriveFromMaya") 0;
+setAttr ($occobjes[$hi]+".miHide") 1;
+}
+select -cl;

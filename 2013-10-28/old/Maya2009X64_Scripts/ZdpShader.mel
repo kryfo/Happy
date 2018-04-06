@@ -1,0 +1,85 @@
+
+
+string $lightm[]=`ls -lights`;
+if (size($lightm) > 0)
+		{
+			for ($item in $lightm)
+			{
+				setAttr ($item+".v") 0;
+			}
+		}
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////
+//生成ZD材质球
+if (!`objExists ZDshaderSG`)
+{sets -renderable true -noSurfaceShader true -empty -name ZDshaderSG;}
+
+if (!`objExists ZDshader`)
+{shadingNode -asShader surfaceShader - n ZDshader;}
+
+if (!`objExists setRangeUtility`)
+{shadingNode -asUtility setRange -n setRangeUtility;}
+
+if (!`objExists samplerInfoUtility`)
+{shadingNode -asUtility samplerInfo -n samplerInfoUtility;}
+
+if (!`objExists multiplyDivideUtility`)
+{shadingNode -asUtility multiplyDivide -n multiplyDivideUtility;}
+
+if(`isConnected ZDshader.outColor ZDshaderSG.surfaceShader`==0)
+{
+connectAttr -f ZDshader.outColor ZDshaderSG.surfaceShader;
+connectAttr -f setRangeUtility.outValueX ZDshader.outColorR;
+connectAttr -f setRangeUtility.outValueX ZDshader.outColorG;
+connectAttr -f setRangeUtility.outValueX ZDshader.outColorB;
+connectAttr -f multiplyDivideUtility.outputX setRangeUtility.valueX;
+connectAttr -f samplerInfoUtility.pointCameraZ multiplyDivideUtility.input1X;
+addAttr -longName "cameraNearClipPlane" -attributeType "float" samplerInfoUtility;
+addAttr -longName "cameraFarClipPlane"  -attributeType "float" samplerInfoUtility;
+connectAttr -f samplerInfoUtility.cameraNearClipPlane setRangeUtility.oldMinX;
+connectAttr -f samplerInfoUtility.cameraFarClipPlane setRangeUtility.oldMaxX;
+setAttr setRangeUtility.minX 1.0; 
+setAttr setRangeUtility.maxX 0.0;
+setAttr "multiplyDivideUtility.input2X" -1;
+}
+
+
+/////选择面赋材质
+string $renderPass[] = `listTransforms "-type surfaceShape"`;
+select -r $renderPass;
+string $renderObj;
+for($renderObj in $renderPass)
+{
+//if(`gmatch $renderObj "*YTPP*"`)
+{
+select $renderObj;
+//int $maxf[]=`polyEvaluate -face $renderObj`;
+//int $maxx=$maxf[0];
+//select $renderObj.f[0:$maxx];	
+sets -e -forceElement ZDshaderSG;
+}
+select -cl;
+}
+
+//删除流体
+/*
+string $fluidshape[] =`ls -type "fluidShape"`;
+select $fluidshape;
+if(size($fluidshape)>0)
+{pickWalk -d up;}
+string $fluid[]=`ls -sl`;
+if(size($fluid)>0)
+{delete $fluid;}
+*/
+
+//隐藏流体渲染属性
+string $fluidshapes[] =`ls -type "fluidShape"`;
+for($fluidone in $fluidshapes)
+{
+setAttr ($fluidone + ".primaryVisibility") 0;
+}
+/////////////////////////////////////////////////////////////////////////

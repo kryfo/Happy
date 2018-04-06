@@ -1,0 +1,142 @@
+/*
+string $references[]=`file -q -r`;
+for($perRef in $references)
+{
+ file -importReference $perRef;
+
+}
+                
+string $deleteM[] = `lsThroughFilter DefaultShadingGroupsAndMaterialsFilter`;
+		if (size($deleteM) > 0)
+		{
+			for ($item in $deleteM)
+			{
+				delete $item;
+			}
+		}
+
+string $deleteT[] = `lsThroughFilter DefaultTexturesFilter`;
+	if (size($deleteT) > 0)
+		{
+			for ($item in $deleteT)
+			{
+				delete $item;
+			}
+		}
+
+string $lightm[]=`ls -lights`;
+if (size($lightm) > 0)
+		{
+			for ($item in $lightm)
+			{
+				delete $item;
+			}
+		}
+*/
+
+//////////////////////////////////////////////////////////////////////////
+
+string $lightm[]=`ls -lights`;
+if (size($lightm) > 0)
+		{
+			for ($item in $lightm)
+			{
+				setAttr ($item+".v") 0;
+			}
+		}
+
+
+select -cl;
+
+if(`objExists ("*"+":"+"*coneShape*")`)
+{
+select -r ("*"+":"+"*coneShape*");
+string $hide[]=`ls -sl`;
+if (size($hide) > 0)
+		{
+			for ($h in $hide)
+			{
+				setAttr ($h+".v") 0;
+			}
+		}
+}
+select -cl;
+
+//隐藏流体渲染属性
+string $fluidshapes[] =`ls -type "fluidShape"`;
+for($fluidone in $fluidshapes)
+{
+setAttr ($fluidone + ".primaryVisibility") 0;
+}
+select -cl;
+
+////////////////////////////////////////////////////////////
+
+if(`objExists ("*"+":"+"*eyepupil*")`)
+{select -add  ("*"+":"+"*eyepupil*");}
+
+if(`objExists ("*"+":"+"*eyelash*")`)
+{select -add   ("*"+":"+"*eyelash*");}
+
+if(`objExists ("*"+":"+"*eyebrow*")`)
+{select -add  ("*"+":"+"*eyebrow*");}
+
+if(`objExists ("*"+":"+"*eyeglass*")`)
+{select -add  ("*"+":"+"*eyeglass*");}
+
+if(`objExists ("*"+":"+"*hideMrRender*")`)
+{select -add  ("*"+":"+"*hideMrRender*");}
+
+string $occobjes[]=`ls -type "transform" -sl`;
+
+int $hi;
+for($hi=0; $hi<size($occobjes);$hi++)
+{
+setAttr ($occobjes[$hi]+".miDeriveFromMaya") 0;
+setAttr ($occobjes[$hi]+".miHide") 1;
+}
+select -cl;
+//////////////////////////////////////////////////////////////////////////
+//生成OCC材质球
+if (!`objExists OCCshaderSG`)
+{sets -renderable true -noSurfaceShader true -empty -name OCCshaderSG;}
+
+if (!`objExists OCCshader`)
+{ string $shader = `shadingNode -asShader surfaceShader - n OCCshader`; }
+
+if (!`objExists OCCtexture`)
+{ string $texture = `shadingNode -asTexture  mib_amb_occlusion -n OCCtexture`; }
+
+
+if(`isConnected OCCshader.outColor OCCshaderSG.surfaceShader`==0)
+{
+connectAttr -f OCCshader.outColor OCCshaderSG.surfaceShader;
+connectAttr -f OCCtexture.outValue OCCshader.outColor;
+
+setAttr "OCCtexture.samples" 128;
+setAttr "OCCtexture.spread" 1;
+setAttr "OCCtexture.max_distance" 25;
+}
+/////选择面赋材质
+string $renderPass[] = `listTransforms "-type surfaceShape"`;
+string $renderObj;
+for($renderObj in $renderPass)
+{
+select $renderObj;
+//int $maxf[]=`polyEvaluate -face $renderObj`;
+//int $maxx=$maxf[0];
+//select $renderObj.f[0:$maxx];	
+sets -e -forceElement OCCshaderSG;
+	//setAttr ($renderObj+".castsShadows")    0;
+	//setAttr ($renderObj+".receiveShadows")  0;
+	//setAttr ($renderObj+".primaryVisibility") 1;
+}
+
+select -cl;
+
+
+
+
+/////////////////////////////////////////////////////////////////////////
+
+

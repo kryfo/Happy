@@ -1,0 +1,68 @@
+
+if(`window -ex SelfRender`) deleteUI -window "SelfRender";
+window -menuBar 1 -title "SelfRender"    SelfRender;
+columnLayout -columnAttach "both" 1  -columnWidth 400 Layoutmain;
+
+text -label "getPath";
+textField -tx "please in put your path" getpath;
+button -l "getRender" -c "GetRender()";
+showWindow SelfRender;
+
+
+global proc GetRender()
+{
+string $renderpath=`textField -q -tx getpath`;
+if(`filetest -d $renderpath`)
+{
+string $imagespath="E:\Renderimages/";
+ if(!`filetest -d $imagespath`)
+    {sysFile -makeDir $imagespath;}
+    
+string $renderbatfile = ($renderpath+"/"+"renderbat.doc");
+
+
+string $filename[]  =`getFileList -folder ($renderpath+"/") -filespec "*_lr_*.mb"`;
+if(size($filename)>0)
+{
+for($ren in $filename)
+{
+string $foldername=basenameEx($ren);
+
+if(!`filetest -d ($imagespath+$foldername)`)
+    {sysFile -makeDir ($imagespath+$foldername);}
+
+string $batword=("\"C:/Program Files/Autodesk/Maya2009/bin/Render\" " + "-r file -of tif -pad 4 " + "-im " + $foldername + " " + "-rd "+"\""+$imagespath+$foldername+"\""+" "+"\""+$renderpath+"/"+$ren+"\""+"\n");
+$fileId=`fopen $renderbatfile "a"`;
+fwrite $fileId $batword;
+fclose $fileId;
+}
+}
+
+string $filefoldername[]  =`getFileList -folder ($renderpath+"/") -filespec "*sc*."`;
+for($ren in $filefoldername)
+{
+    string $filernameII[]  =`getFileList -folder ($renderpath+"/"+$ren+"/") -filespec "*_lr_*.mb"`;
+	if(size($filernameII)>0)
+{
+    for($renII in $filernameII)
+    {
+     string $foldernameII=basenameEx($renII);
+    if(!`filetest -d ($imagespath+$ren)`)
+        {sysFile -makeDir ($imagespath+$ren);}
+    if(!`filetest -d ($imagespath+$ren+"/"+$foldernameII)`)
+        {sysFile -makeDir ($imagespath+$ren+"/"+$foldernameII);}
+        string $batword=("\"C:/Program Files/Autodesk/Maya2009/bin/Render\" " + "-r file -of tif -pad 4 " + "-im " + $foldernameII + " " + "-rd "+"\""+$imagespath+$ren+"/"+$foldernameII+"\""+" "+"\""+$renderpath+"/"+$ren+"/"+$renII+"\""+"\n");
+        $fileId=`fopen $renderbatfile "a"`;
+        fwrite $fileId $batword;
+        fclose $fileId;      
+    }
+}
+}
+deleteUI -window "SelfRender";
+}
+
+}
+
+
+
+

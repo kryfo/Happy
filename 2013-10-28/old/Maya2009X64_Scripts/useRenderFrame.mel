@@ -1,0 +1,22 @@
+/////////////////////////ÉèÖÃÊ×Î²Ö¡
+string $checkFileName=`file -q -sn -shn`;
+string $tempFileGiveFrame=`match "\\([0-9]+\\)" $checkFileName`;
+string $FileGiveFrame=`match "[0-9]+" $tempFileGiveFrame`;
+if(($FileGiveFrame!="")&&(int($FileGiveFrame)>100))
+{
+setAttr "defaultRenderGlobals.startFrame" 100;
+setAttr "defaultRenderGlobals.endFrame" $FileGiveFrame;
+playbackOptions -e -min 100 -max $FileGiveFrame;
+playbackOptions -e -ast 100 -aet $FileGiveFrame;
+}
+else
+{
+setAttr "defaultRenderGlobals.startFrame" 100;
+setAttr "defaultRenderGlobals.endFrame" 100;
+playbackOptions -e -min 100 -max 101;
+playbackOptions -e -ast 100 -aet 101;
+}
+
+setAttr -l false "defaultRenderGlobals.modifyExtension";
+setAttr "defaultRenderGlobals.modifyExtension" 0;
+////////////////////////////////////////

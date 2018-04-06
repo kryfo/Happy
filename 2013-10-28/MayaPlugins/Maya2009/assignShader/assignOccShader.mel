@@ -1,0 +1,11 @@
+///////////////////////////—°‘Ò√Ê∏≥≤ƒ÷ 
+string $renderPass[] = `listTransforms "-type surfaceShape"`;
+for($renderObj in $renderPass)
+{
+select $renderObj;
+	//int $maxf[]=`polyEvaluate -face $renderObj`;
+	//int $maxx=$maxf[0];
+	//select $renderObj.f[0:$maxx];	
+sets -e -forceElement OCCshaderSG;
+select -cl;
+}

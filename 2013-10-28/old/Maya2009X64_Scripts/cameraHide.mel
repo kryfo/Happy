@@ -1,0 +1,17 @@
+//////////////////////////////////////////////////////////////////////
+string $headsUP[]=`headsUpDisplay -listHeadsUpDisplays`;
+for($headUP in $headsUP)
+{
+if(`gmatch $headUP "use*"`)
+{
+	if(`headsUpDisplay -q -vis  $headUP`)
+	{headsUpDisplay -e -vis 0 $headUP;}
+	else{headsUpDisplay -e -vis 1 $headUP;}
+}
+}
+
+string $perspCameras[] = `listCameras -p`;
+for($cama in $perspCameras)
+{setAttr($cama+".displayResolution") 0;setAttr($cama+".displaySafeAction") 0;setAttr($cama+".overscan") 1;}
+
+

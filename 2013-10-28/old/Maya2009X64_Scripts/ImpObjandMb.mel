@@ -1,0 +1,5 @@
+string $fileDialog = `fileDialog`;
+if((`gmatch $fileDialog "*.obj"`)||(`gmatch $fileDialog "*.mb"`))
+{
+file -import $fileDialog;
+}

@@ -1,0 +1,101 @@
+
+///////////////////////////////////////////////////////////////
+//产生cache
+string $fileDialog = `fileDialog`;
+if(`gmatch $fileDialog "*animationScenes*"`)
+{
+file -f -o $fileDialog;
+}
+else
+{error  "File name is wrong!";}
+
+string $filePathName =`file -q -sn`;
+string $fileCachePath = startString($filePathName, 12);
+string $fileName =`file -q -sn -shn`;
+string $fileEndName = endString($fileName, 17);
+string $fileCacheName =`substitute $fileEndName $fileName ""`;
+$CachePath = ($fileCachePath +"/data"+"/"+$fileCacheName+"/");
+
+//起始帧
+string $endStringStratName =endString($filePathName,12);
+string $stratFrameName = basename($filePathName,$endStringStratName);
+string $startFrame =endString($stratFrameName, 3);
+setAttr "defaultRenderGlobals.startFrame" $startFrame;
+//结束帧
+string $endStringEndName =endString($filePathName,8);
+string $endFrameName = basename($filePathName,$endStringEndName);
+string $endFrame =endString($endFrameName, 3);
+setAttr "defaultRenderGlobals.endFrame" $endFrame;
+
+string $deleteFiles[] = `getFileList -folder $CachePath`;
+int $i;
+for($i=0;$i<size($deleteFiles);$i++)
+{
+sysFile -delete ($CachePath+$deleteFiles[$i]);
+}
+
+string $renderPass[] = `listTransforms "-type mesh"`;
+string $renderObj;
+for($renderObj in $renderPass)
+{
+//if(`gmatch $renderObj "*_Cache_*"`)
+{
+select -add $renderObj;
+}
+}
+doCreateGeometryCache 5 { "2", $startFrame, $endFrame, "OneFile", "1", $CachePath,"0",$fileCacheName,"0", "add", "0", "1", "1","0","1","mcc" } ;
+select -cl;
+
+
+////////////////////////////////////////////////////
+string $referFiles[] = `file -q -r`;
+
+for($referfile in $referFiles)
+{
+string $refernode = `referenceQuery -referenceNode $referfile`;
+file -unloadReference  $refernode;
+string $substituteName = "setup";
+string $referNewFile = `substitute $substituteName $referfile "muster"`;
+file -r   $referNewFile;
+file -removeReference $referfile;
+}
+
+string $filelongName =`file -q -sn`;
+string $fileshortName =`file -q -sn -shn`;
+string $filePathName =`substitute $fileshortName $filelongName ""`;
+string $fileNewPathName =`substitute "animationScenes" $filePathName "cacheScenes"`;
+string $fileEndName = endString($fileshortName,16);
+string $fileStartName = startString($fileshortName,17);
+sysFile -makeDir $fileNewPathName;
+string $referNewFiles[] = `file -q -r`;
+file -f -new;
+
+for( $referNew in $referNewFiles)
+{
+string $nodename =basenameEx($referNew);
+file -r -namespace $nodename $referNew;	
+}
+
+string $saveAsname =$fileNewPathName+$fileStartName+"_an_cache_"+$fileEndName;
+file -rename $saveAsname;
+
+source SetSoftwareRenderSetting.mel;
+
+file -f -s;
+///////////////////////////////
+//连接cache
+getAttr defaultRenderGlobals.imfkey;
+string $renderPass[] = `listTransforms "-type mesh"`;
+string $renderObj;
+for($renderObj in $renderPass)
+{
+//if(`gmatch $renderObj "*_Cache_*"`)
+{
+select -add $renderObj;
+}
+}
+source doImportCacheArgList;
+importCacheFile  ($CachePath + $fileCacheName+".xml") "xml";
+file -f -save;
+string $done=`file -f -new`;
+

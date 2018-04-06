@@ -1,0 +1,165 @@
+source "loadSetting.mel";
+
+string $headsdis[]=`headsUpDisplay -listHeadsUpDisplays`;
+
+for($heads in $headsdis)
+{
+headsUpDisplay -e -vis 0 $heads;
+}
+headsUpDisplay -e -vis 1 HUDViewAxis;
+
+headsUpDisplay -rp 2 1;
+headsUpDisplay -rp 8 3;
+headsUpDisplay -rp 8 2;
+headsUpDisplay -rp 1 1;
+headsUpDisplay -rp 1 2;
+headsUpDisplay -rp 6 2;
+headsUpDisplay -rp 7 3;
+
+
+//////////////////////////////////////////////
+headsUpDisplay
+-section                2
+-block                  1
+-label                  "ScenesName"
+-blockSize              "large"
+-labelFontSize          "large"
+-dataFontSize           "large"
+-event                  "NewSceneOpened"
+-command                "scenesName()"
+FscenesName;
+
+global proc string scenesName()
+{
+string $filename=`file -q -sn -shn`;
+if($filename=="")
+{$filename="Madaha";}
+string $scenesname=basenameEx($filename);
+return $scenesname;
+}
+
+//////////////////////////////////////////////
+
+headsUpDisplay
+-section                8
+-block                  3
+-label                  "Name"
+-blockSize              "large"
+-labelFontSize          "large"
+-dataFontSize           "large"
+-event                  "NewSceneOpened"
+-command                "userName()"
+FuserName;
+
+global proc string userName()
+  {
+  string  $filepath = "C:/MYname";
+  $fileread=`fopen $filepath "r"`;
+  string $name = `fgetline $fileread`;
+  fclose $fileread;
+  string $user=$name;
+  return $user;
+  }
+
+/////////////////////////////////////////////
+ 
+headsUpDisplay
+-section                8
+-block                  2
+-label                  "FocalLength"
+-blockSize              "large"
+-labelFontSize          "large"
+-dataFontSize           "large"
+-attachToRefresh        "FfocalLength"
+-command                "camfocalth()"
+;
+
+global proc string camfocalth()
+{
+  string $curPanel = `getPanel -withFocus`;
+  string $camname =  `modelPanel -q -camera $curPanel`;
+  string $focal=getAttr($camname+".focalLength"); 
+	return  $focal;
+}
+////////////////////////////////////////////////////
+headsUpDisplay
+-section                1
+-block                  1
+-label                  "Pixal"
+-blockSize              "large"
+-labelFontSize          "large"
+-dataFontSize           "large"
+-command                "Pixal()"
+FPixal;
+
+global proc string Pixal()
+  {
+    
+    string  $pixal_h =`getAttr   defaultResolution.width`;
+    string  $pixal_W =`getAttr   defaultResolution.height`;
+
+    string $pixal= $pixal_h +"x"+$pixal_W;
+    return $pixal;
+  }
+
+////////////////////////////////////////////////////
+
+headsUpDisplay
+-section                1
+-block                  2
+-label                  "Format"
+-blockSize              "large"
+-labelFontSize          "large"
+-dataFontSize           "large"
+-event                  "timeUnitChanged" 
+-command                "timeformat()"
+FFormat;
+
+global proc string timeformat()
+{
+  string $pal =`currentUnit -q -t`;
+	return $pal;
+}
+/////////////////////////////////////////////
+
+headsUpDisplay
+
+-section                7
+-block                  3
+-label                  "Cam"
+-blockSize              "large"
+-labelFontSize          "large"
+-dataFontSize           "large"
+-attachToRefresh        "FCam"
+-command                "cam()"
+;
+
+global proc string cam()
+{
+  string $curPanel = `getPanel -withFocus`;
+  string $camname =  `modelPanel -q -camera $curPanel`;
+  return $camname;
+}
+
+
+/////////////////////////////////////////////////
+headsUpDisplay
+-section                6
+-block                  2
+-label                  "Frame"
+-blockSize              "large"
+-labelFontSize          "large"
+-dataFontSize           "large"
+-command                "frame()"
+-attachToRefresh 	("FFrame");
+
+
+		headsUpDisplay   -refresh  ("FFrame");	
+global proc string frame()
+{
+ float    $curframe=`currentTime -q`;
+ float    $maxframe=`playbackOptions -q -aet`;
+ string   $outframe = ($curframe +"/" + $maxframe);
+      return $outframe;
+}
+//////////////////////////////////////////////

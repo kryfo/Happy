@@ -1,0 +1,32 @@
+if( `objExists "*:*CharBodySmooth"` ) 
+{
+select -r "*:*CharBodySmooth";
+
+string $smoothes[]=`ls -sl`;
+for($one in $smoothes)
+    {
+if(`getAttr ($one+".CharBodySmooth")`)
+	{setAttr ($one+".CharBodySmooth") 0;}
+
+else{ setAttr ($one+".CharBodySmooth") 1; }
+
+    }
+}
+
+
+
+
+if( `objExists "*CharBodySmooth*"` ) 
+{
+select -r "*CharBodySmooth*";
+
+string $smoothes[]=`ls -sl`;
+for($one in $smoothes)
+    {
+if(`getAttr ($one+".CharBodySmooth")`)
+	{setAttr ($one+".CharBodySmooth") 0;}
+
+else{ setAttr ($one+".CharBodySmooth") 1; }
+
+    }
+}

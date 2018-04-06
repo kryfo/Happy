@@ -1,0 +1,29 @@
+
+global proc ENV()
+{
+
+string $version=`about -v`;
+string $MayaVersion=`match "[0-9]+" $version`;
+string $hexadecimal=`match "[a-z]+[0-9]+" $version`;
+
+string $Getenv =`getenv "HOME"`;
+
+string $env=$Getenv+"/maya/"+$MayaVersion+"-"+$hexadecimal+"/Maya.env";
+string $netEnv ="//mayaprosp/plug-ins/MayaPlugins/Maya2012/env/Maya.env";
+sysFile -copy  $env  $netEnv;
+
+
+string $setUp=$Getenv+"/maya/"+$MayaVersion+"-"+$hexadecimal+"/scripts/userSetup.py";
+string $netSetUp="//mayaprosp/plug-ins/MayaPlugins/Maya2012/Py/userSetup.py";
+sysFile -copy  $setUp  $netSetUp;
+
+string $manager=$Getenv+"/maya/"+$MayaVersion+"-"+$hexadecimal+"/scripts/Manager.pyc";
+string $netManager="//mayaprosp/plug-ins/MayaPlugins/Maya2012/Py/Manager.pyc";
+sysFile -copy  $manager  $netManager;
+
+string $poseMan=$Getenv+"/maya/"+$MayaVersion+"-"+$hexadecimal+"/scripts/PoseMan.pyc";
+string $netPoseMan="//mayaprosp/plug-ins/MayaPlugins/Maya2012/Py/PoseMan.pyc";
+sysFile -copy  $poseMan  $netPoseMan;
+
+}
+ENV();

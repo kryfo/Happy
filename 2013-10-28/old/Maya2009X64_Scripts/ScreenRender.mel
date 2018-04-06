@@ -1,0 +1,57 @@
+if(`window -exists "ScreenRender"`) deleteUI "ScreenRender";
+window "ScreenRender";
+scrollLayout;
+rowColumnLayout -numberOfColumns 2;
+string $allCameras[] = `listCameras -p`;
+
+text -l "RenderCamera";
+optionMenu selCam;
+for($camera in $allCameras)
+{
+	if(`getAttr ($camera+".renderable")`)
+		{menuItem -label $camera;}
+}
+text -l "StartFrame";
+int $sf=`getAttr defaultRenderGlobals.startFrame`;
+intField -v $sf startf;
+text -l "EndFrame";
+int $ef=`getAttr defaultRenderGlobals.endFrame`;
+intField -v $ef endf;
+separator;separator;
+button -l "StartRender" -c "SR()";
+button -l "CloseWindow" -c "deleteUI ScreenRender";
+showWindow "ScreenRender";
+
+
+
+global proc SR()
+{
+string $witchCam=`optionMenu -q -v selCam`;
+string $filePath =`workspace -fn`+"/images";
+
+int $i;
+int $min=`intField -q -v startf`;
+int $max=`intField -q -v endf`;
+
+if($min > $max)
+{error "Start Frame <= End Frame";}
+
+for ($i=$min;$i<($max+1);$i++)
+{
+	if (`file -q -ex "d:\\stop.txt"`)
+		{
+		system("del d:\\stop.txt" );
+		error "Render stoped";
+		}
+
+
+	// goto frame
+	currentTime $i;
+	// render
+	RenderViewWindow;
+	renderWindowRenderCamera render renderView $witchCam;
+}
+}
+
+
+
